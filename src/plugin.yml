@@ -4,17 +4,4 @@ author: AlphaCH1337
 main: ru.alphach1337.detour.Main
 commands:
     detour:
-        description: Начинает(При повторном использовани отменят) обход
-        usage: /detour
-    next:
-        description: Переходит к следующему игроку
-        usage: /next
-    join:
-        description: Добавляет в обход.
-        usage: /join
-    find:
-        description: Телепортирует к текущему игроку в обходе
-        usage: /find
-    savepos:
-        description: Сохраняет позицию игрока, если он выйдет
-        usage: /savepos
+        usage: /detour [start, stop, join, next]
