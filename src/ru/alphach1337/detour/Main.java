@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -16,16 +15,16 @@ public class Main extends JavaPlugin{
     HashMap<Location, String> loc2 = new HashMap<Location, String>();
     ArrayList<Location> loc = new ArrayList<Location>();
     ArrayList<String> ignorePlayers = new ArrayList<String>();
-	public boolean isDetour = false;
+    public boolean isDetour = false;
 
-	@Override
-	public void onEnable() {
-	}
+    @Override
+    public void onEnable() {
+    }
 
-	@Override
-	public void onDisable() {
+    @Override
+    public void onDisable() {
 
-	}
+    }
     public boolean onCommand(final CommandSender sender, final Command cmd,final String commandLabel, final String[] args) {
         if (!(sender instanceof Player)){
             return false; 
@@ -35,8 +34,17 @@ public class Main extends JavaPlugin{
         }
         Player p = (Player) sender;
         if (args[0].equalsIgnoreCase("join")) {
-            if (!isDetour) return false;
-            if (ignorePlayers.contains(p.getName())) return false;
+            if (!isDetour){
+                return false;
+            }
+            for (Location l2 : loc2.keySet()) {
+                if (p.getName().equals(loc2.get(l2))) {
+                    return false;
+                }
+            }
+            if (ignorePlayers.contains(p.getName())){
+                return false;
+            }
             Location l = p.getLocation().clone();
             loc2.put(l.clone(), p.getName());
             loc.add(l.clone());
@@ -94,7 +102,7 @@ public class Main extends JavaPlugin{
             return true;
         }
         return false;
-        
+
     }
 
 }
