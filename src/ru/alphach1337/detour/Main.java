@@ -16,8 +16,8 @@ import java.util.HashMap;
 
 
 public class Main extends JavaPlugin implements Listener {
-    HashMap<Location, String> loc2 = new HashMap<Location, String>();
-    ArrayList<Location> loc = new ArrayList<Location>();
+    HashMap<String, Location> loc = new HashMap<String, Location>();
+    ArrayList<String> players = new ArrayList<String>();
     ArrayList<String> ignorePlayers = new ArrayList<String>();
     public boolean isDetour = false;
 
@@ -53,8 +53,8 @@ public class Main extends JavaPlugin implements Listener {
                 p.sendMessage(settings.notStarted);
                 return true;
             }
-            for (Location l2 : loc2.keySet()) {
-                if (p.getName().equals(loc2.get(l2))) {
+            for (String s : loc.keySet()) {
+                if (p.getName().equals(loc.get(s))) {
                     p.sendMessage(settings.alreadyInTheList);
                     return true;
                 }
@@ -63,13 +63,17 @@ public class Main extends JavaPlugin implements Listener {
                 p.sendMessage(settings.alreadyInTheList);
                 return true;
             }
+
             p.sendMessage(settings.addedToList);
             Location l = p.getLocation().clone();
-            loc2.put(l.clone(), p.getName());
-            loc.add(l.clone());
+            loc.put(p.getName(), l.clone());
+            players.add(p.getName());
+            ignorePlayers.add(p.getName());
             return true;
         }
+
         if (args[0].equalsIgnoreCase("next")) {
+            boolean isOffline = false;
             if (!p.isOp()) {
                 p.sendMessage(settings.hasNoPermission);
                 return true;
@@ -78,24 +82,28 @@ public class Main extends JavaPlugin implements Listener {
                 p.sendMessage(settings.notStarted);
                 return true;
             }
-            if (loc.isEmpty()) {
+            if (players.isEmpty()) {
                 p.sendMessage(settings.notJoined);
                 return true;
             }
-            p.teleport(loc.get(0));
-            for (Location st : loc2.keySet()) {
-                if (loc.get(0).equals(st)) {
-                    String pl = loc2.get(st);
-                    loc.remove(0);
-                    loc2.remove(st);
-                    ignorePlayers.add(pl);
-                    try {
-                        Player p2 = Bukkit.getPlayer(pl);
-                        p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + p2.getName());
-                        p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + loc.size());
-                    } catch (Exception e) {
-                        p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + pl + ChatColor.RED + " (оффлайн)");
-                        p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + loc.size());
+
+            try {
+                p.teleport(Bukkit.getPlayer(players.get(0)));
+            } catch (Exception e) {
+                p.teleport(loc.get(players.get(0)));
+                isOffline = true;
+            }
+
+            for (String s : loc.keySet()) {
+                if (players.get(0).equals(s)) {
+                    players.remove(0);
+                    loc.remove(s);
+                    if (!isOffline) {
+                        p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + s);
+                        p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + players.size());
+                    } else {
+                        p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + s + ChatColor.RED + " (оффлайн)");
+                        p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + players.size());
                     }
                     return true;
                 }
@@ -110,6 +118,9 @@ public class Main extends JavaPlugin implements Listener {
                 p.sendMessage(settings.alreadyStarted);
                 return true;
             }
+            Title title = new Title(settings.Started1, "Чтобы присоединиться, пиши /detour join");
+            title.setSubtitleColor(ChatColor.YELLOW);
+            title.broadcast();
             Bukkit.broadcastMessage(settings.Started1);
             Bukkit.broadcastMessage(settings.Started2);
             isDetour = true;
@@ -125,8 +136,8 @@ public class Main extends JavaPlugin implements Listener {
                 return true;
             }
             isDetour = false;
+            players.clear();
             loc.clear();
-            loc2.clear();
             ignorePlayers.clear();
             Bukkit.broadcastMessage(settings.stopDetour);
             return true;
