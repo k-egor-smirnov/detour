@@ -4,4 +4,17 @@ author: AlphaCH1337
 main: ru.alphach1337.detour.Main
 commands:
     detour:
-        usage: /detour [start, stop, join, next]
+      start:
+        description: Начинает обход
+      stop:
+        description: Заканчивает обход
+      join:
+        description: Присоединиться к обходу
+      next:
+        descrption: Следующий игрок
+      add-hologram:
+        description: Добавляет летающую табличку
+      add-string:
+        description: Добавляет строку к летающей табличке (максимум 9 строк)
+      usage: /detour [start, stop, join, next]
+depend: [Holograms]

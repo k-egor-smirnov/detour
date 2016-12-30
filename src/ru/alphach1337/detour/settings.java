@@ -1,5 +1,6 @@
 package ru.alphach1337.detour;
 
+import javafx.scene.paint.Color;
 import org.bukkit.ChatColor;
 
 public class settings {
@@ -13,4 +14,7 @@ public class settings {
     public static String addedToList = ChatColor.GREEN + "Теперь ты участвуешь в обходе!";
     public static String notJoined = ChatColor.RED + "В очереди нет игроков!";
     public static String alreadyStarted = ChatColor.RED + "Обход уже начался!";
+    public static String onStartSubtitle = "Чтобы присоединиться, пиши /detour join";
+    public static String tooManySymbols = "В строке больше 15 символов!";
+    public static String sybmolsHint = Color.YELLOW + "Попробуй разделить сообщение на строки (максимум 9)";
 }
