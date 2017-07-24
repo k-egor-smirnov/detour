@@ -1,20 +1,19 @@
 name: Detour
-version: 1.2.2
+version: 1.2.6
 author: AlphaCH1337 
 main: ru.alphach1337.detour.Main
 commands:
     detour:
       start:
         description: Начинает обход
+        usage: /start
       stop:
         description: Заканчивает обход
+        usage: /stop
       join:
         description: Присоединиться к обходу
+        usage: /join
       next:
         descrption: Следующий игрок
-      add-hologram:
-        description: Добавляет летающую табличку
-      add-string:
-        description: Добавляет строку к летающей табличке (максимум 9 строк)
+        usage: /next
       usage: /detour [start, stop, join, next]
-depend: [Holograms]

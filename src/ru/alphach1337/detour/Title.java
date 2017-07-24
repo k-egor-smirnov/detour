@@ -215,7 +215,7 @@ public class Title {
      */
     public void send(Player player) {
         if (packetTitle != null) {
-            // First reset previous settings
+            // First reset previous Settings
             resetTitle(player);
             try {
                 // Send timings first
@@ -375,7 +375,7 @@ public class Title {
     }
 
     /**
-     * Reset the title settings
+     * Reset the title Settings
      *
      * @param player Player
      */

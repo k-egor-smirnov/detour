@@ -3,7 +3,7 @@ package ru.alphach1337.detour;
 import javafx.scene.paint.Color;
 import org.bukkit.ChatColor;
 
-public class settings {
+public class Settings {
     public static String hasNoPermission = ChatColor.RED + "У вас нет прав для использования данной команды";
     public static String notStarted = ChatColor.RED + "Обход еще не начался!";
     public static String stopDetour = ChatColor.RED + "Обход закончен";
@@ -16,5 +16,6 @@ public class settings {
     public static String alreadyStarted = ChatColor.RED + "Обход уже начался!";
     public static String onStartSubtitle = "Чтобы присоединиться, пиши /detour join";
     public static String tooManySymbols = "В строке больше 15 символов!";
-    public static String sybmolsHint = Color.YELLOW + "Попробуй разделить сообщение на строки (максимум 9)";
+    public static String stick = "посох Мегумин";
+    public static String time = ChatColor.RED + "Вы отыграли недостаточно часов, чтобы зайти в обход. Необходимо: ";
 }
