@@ -13,6 +13,7 @@ class Quit {
                 if(!DetourManager.getInstance().config.getBoolean("allowOffline")) {
                     if (event.getPlayer().getName().equalsIgnoreCase(DetourManager.getInstance().players.get(i))) {
                         DetourManager.getInstance().players.remove(i);
+						DetourManager.getInstance().ignorePlayers.remove(i);
                     }
                 }
             }
