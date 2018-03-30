@@ -1,0 +1,35 @@
+name: Detour
+version: 1.3.0
+author: AlphaCH1337 
+main: ru.alphach1337.detour.Detour
+commands:
+    detour:
+      start:
+        description: Начинает обход
+        permission: detour.manage
+        usage: /detour start
+      stop:
+        description: Заканчивает обход
+        permission: detour.manage
+        usage: /detour stop
+      join:
+        description: Присоединиться к обходу
+        permission: detour.join
+        usage: /detour join
+      next:
+        descrption: Следующий игрок
+        permission: detour.manage
+        usage: /detour next
+      usage: /detour [start, stop, join, next]
+permissions:
+  detour.*:
+    description: Дает доступ ко всем командам обхода
+    children:
+      detour.manage: true
+      detour.join: true
+  detour.manage:
+    description: Дает доступ к управлению (начать/остановить/переход) обходом
+    default: false
+  detour.join:
+    description: Дает доступ к присоединению к обходу
+    default: true

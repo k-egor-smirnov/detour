@@ -8,6 +8,7 @@ import ru.alphach1337.detour.Detour;
 import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.Title;
 import ru.alphach1337.detour.managers.DetourManager;
+import ru.alphach1337.detour.sqlite.DataBase;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class Start implements Command{
 
     @Override
     public String getHelp() {
-        return null;
+        return "Тебе ничего не поможет";
     }
 
     @Override
@@ -30,7 +31,7 @@ public class Start implements Command{
 
         if(!DetourManager.getInstance().getIsDetour()) {
             DetourManager.getInstance().start();
-            DetourManager.getInstance().party.add(commandSender.getName());
+            DataBase.insert(((Player) commandSender).getUniqueId().toString(), "party");
 
             Title title = new Title(Settings.Started1, Settings.onStartSubtitle);
             title.setSubtitleColor(ChatColor.YELLOW);

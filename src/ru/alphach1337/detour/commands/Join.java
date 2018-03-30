@@ -28,7 +28,6 @@ public class Join implements Command {
         Player player = (Player) commandSender;
         FileConfiguration config = DetourManager.getInstance().config;
 
-        if(DetourManager.getInstance().getIsDetour()) {
             if (player.getStatistic(Statistic.PLAY_ONE_TICK) * 50L <= (config.getInt("hoursToAllowDetour") * 60 * 60 * 1000)) {
                 player.sendMessage(Settings.time + ChatColor.YELLOW + config.getInt("hoursToAllowDetour"));
             } else {
@@ -38,9 +37,6 @@ public class Join implements Command {
                     player.sendMessage(Settings.alreadyInTheList);
                 }
             }
-        }else{
-            player.sendMessage(Settings.notStarted);
-        }
     }
 
     @Override

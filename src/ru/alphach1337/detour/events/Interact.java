@@ -10,45 +10,46 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.managers.DetourManager;
+import ru.alphach1337.detour.sqlite.DataBase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class Interact {
     public Interact(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-
-        if (player.isOp() && player.getInventory().getItemInMainHand().getType() == Material.STICK && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(Settings.stick)) {
-            if (event.getAction() == Action.LEFT_CLICK_AIR && DetourManager.getInstance().players.size() >= 0) {
-                if (DetourManager.getInstance().getIsDetour()) {
-                    Player target = Bukkit.getPlayer(DetourManager.getInstance().players.get(0));
-
-                    if (target.isOnline()) {
-                        for (String username : DetourManager.getInstance().party) {
-                            Bukkit.getPlayer(username).teleport(target);
+        try {
+            Player player = event.getPlayer();
+            ArrayList<String> players = DataBase.selectAll("players");
+            ArrayList<String> party = DataBase.selectAll("party");
+            HashMap<String, Location> locations = DataBase.selectAllLocations("locations");
+            if (player.isOp() && player.getInventory().getItemInMainHand().getType() == Material.STICK && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(Settings.stick)) {
+                if (event.getAction() == Action.LEFT_CLICK_AIR && players.size() >= 0) {
+                    if (DetourManager.getInstance().getIsDetour()) {
+                        for (String username : party) {
+                            Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
                         }
                     } else {
-                        player.sendMessage(ChatColor.RED + "Игрок вышел из сети");
+                        player.sendMessage(Settings.notStarted);
                     }
-                } else {
-                    player.sendMessage(Settings.notStarted);
-                }
-            } else if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                if (DetourManager.getInstance().getIsDetour()) {
-                    next(player);
-                } else {
-                    player.sendMessage(Settings.notStarted);
+                } else if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                    if (DetourManager.getInstance().getIsDetour()) {
+                        next(player);
+                    } else {
+                        player.sendMessage(Settings.notStarted);
+                    }
                 }
             }
+        }catch (Exception e){
+            Bukkit.broadcastMessage(e.getMessage());
         }
     }
 
     private void next(Player p) {
         boolean isOffline = false;
-
-        ArrayList<String> players = DetourManager.getInstance().players;
-        HashMap<String, Location> locations = DetourManager.getInstance().locations;
-        ArrayList<String> ignorePlayers = DetourManager.getInstance().ignorePlayers;
+        HashMap<String, Location> locations = DataBase.selectAllLocations("locations");
+        ArrayList<String> players = DataBase.selectAll("players");
+        ArrayList<String> party = DataBase.selectAll("party");
 
         if (players.size() <= 0) {
             DetourManager.getInstance().stop();
@@ -68,24 +69,26 @@ public class Interact {
         }
 
         try {
-            for (String username : DetourManager.getInstance().party) {
-                Bukkit.getPlayer(username).teleport(Bukkit.getPlayer(players.get(0)));
+            for (String username : party) {
+                Bukkit.getPlayer(UUID.fromString(username)).teleport(Bukkit.getPlayer(UUID.fromString(players.get(0))));
             }
         } catch (Exception e) {
-            for (String username : DetourManager.getInstance().party) {
-                Bukkit.getPlayer(username).teleport(locations.get(players.get(0)));
+            for (String username : party) {
+                Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
             }
             isOffline = true;
         }
 
         for (int i = 0; i < players.size(); i++) {
-            Player player = Bukkit.getPlayer(players.get(i));
+            Player player = Bukkit.getPlayer(UUID.fromString(players.get(i)));
 
             if (player != null && player.isOnline()) {
                 if (i > 0) {
-                    ActionBarAPI.sendActionBar(player, ChatColor.GREEN + "Твое место в очереди " + i, 200);
+                    p.sendMessage(ChatColor.GREEN + "Твое место в очереди " + i);
+                    //ActionBarAPI.sendActionBar(player, ChatColor.GREEN + "Твое место в очереди " + i, 200);
                 } else {
-                    ActionBarAPI.sendActionBar(player, ChatColor.YELLOW + "За вами наблюдают!", 500);
+                    p.sendMessage(ChatColor.YELLOW + "За вами наблюдают!");
+                    //ActionBarAPI.sendActionBar(player, ChatColor.YELLOW + "За вами наблюдают!", 500);
                 }
             }
         }
@@ -93,18 +96,17 @@ public class Interact {
         for (String s : locations.keySet()) {
             if (players.get(0).equals(s)) {
                 if (!isOffline) {
-                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + s);
+                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + Bukkit.getPlayer(UUID.fromString(s)).getName());
                     p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (players.size() - 1));
                 } else {
-                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + s + ChatColor.RED + " (оффлайн)");
+                    String str = DataBase.selectNameById(s, "idandname");
+
+                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + str + ChatColor.RED + " (оффлайн)");
                     p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (players.size() - 1));
                 }
-
-
-                players.remove(0);
+                DataBase.delete(players.get(0), "players");
                 return;
             }
         }
-
     }
 }

@@ -1,6 +1,7 @@
 package ru.alphach1337.detour.managers;
 
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
+import javafx.scene.chart.PieChart;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -8,18 +9,20 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import ru.alphach1337.detour.Detour;
 import ru.alphach1337.detour.Settings;
+import ru.alphach1337.detour.sqlite.DataBase;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DetourManager {
     private static final DetourManager INSTANCE = new DetourManager();
 
-    public ArrayList<String> players = new ArrayList<String>();
-    public HashMap<String, Location> locations = new HashMap<String, Location>();
-    public ArrayList<String> ignorePlayers = new ArrayList<String>();
+    //public ArrayList<String> players;
+    public HashMap<String, Location> locations;
+    public ArrayList<String> ignorePlayers;
     public FileConfiguration config = Bukkit.getPluginManager().getPlugin("Detour").getConfig();
-    public ArrayList<String> party = new ArrayList<>();
+    public ArrayList<String> party;
 
     private boolean isDetour = false;
 
@@ -35,16 +38,17 @@ public class DetourManager {
     }
 
     public boolean addPlayer(Player p){
-        if(players.contains(p.getName()) || ignorePlayers.contains(p.getName())){
+        if(DataBase.contains(p.getUniqueId().toString(), "players") || DataBase.contains(p.getUniqueId().toString(), "ignoreplayers")){
             return false;
         }
-        players.add(p.getName());
+        DataBase.insert(p.getUniqueId().toString(), "players");
 
-        ignorePlayers.add(p.getName());
+        DataBase.insert(p.getUniqueId().toString(), "ignoreplayers");
+
+        DataBase.insert(p.getName(), p.getUniqueId().toString(), "idandname");
 
         Location l = p.getLocation().clone();
-        locations.put(p.getName(), l.clone());
-
+        DataBase.insert(p.getUniqueId().toString(), l, "locations");
         return true;
     }
 
@@ -53,14 +57,24 @@ public class DetourManager {
     }
 
     public void stop() {
-        reset();
+        deleteAllTables();
+        createAllTables();
         isDetour = false;
     }
 
-    public void reset(){
-        players.clear();
-        locations.clear();
-        party.clear();
-        ignorePlayers.clear();
+    private void createAllTables(){
+        DataBase.createTable("players");
+        DataBase.createTable("ignoreplayers");
+        DataBase.createTable("party");
+        DataBase.createDuoTable("idandname",  "name");
+        DataBase.createDuoTable("locations", "location");
+    }
+
+    private void deleteAllTables(){
+        DataBase.deleteTable("players");
+        DataBase.deleteTable("ignoreplayers");
+        DataBase.deleteTable("party");
+        DataBase.deleteTable("locations");
+        DataBase.deleteTable("idandname");
     }
 }

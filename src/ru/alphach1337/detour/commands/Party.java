@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import ru.alphach1337.detour.Detour;
 import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.managers.DetourManager;
+import ru.alphach1337.detour.sqlite.DataBase;
+
+import java.util.UUID;
 
 public class Party implements Command{
     @Override
@@ -34,16 +37,16 @@ public class Party implements Command{
         switch(args[1]){
             case "add": {
                 if(args.length >= 3) {
-                    if(Bukkit.getPlayer(args[2]) != null) {
+                    if(Bukkit.getPlayer(UUID.fromString(args[2])) != null) {
                         if((commandSender).getName().equalsIgnoreCase(args[2])){
                             commandSender.sendMessage(ChatColor.RED + "Нельзя добавить самого себя!");
                             return;
                         }
 
-                        if(DetourManager.getInstance().party.contains(args[2])){
+                        if(DataBase.contains(args[2], "party")){
                             commandSender.sendMessage(ChatColor.RED + "Игрок уже в команде!");
                         }else {
-                            DetourManager.getInstance().party.add(args[2]);
+                            DataBase.insert(args[2], "party");
                             commandSender.sendMessage(ChatColor.GREEN + "Вы добавили игрока " + args[2] + " в команду для обхода");
                         }
 
