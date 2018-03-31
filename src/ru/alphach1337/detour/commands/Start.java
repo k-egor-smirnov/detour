@@ -4,13 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ru.alphach1337.detour.Detour;
 import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.Title;
 import ru.alphach1337.detour.managers.DetourManager;
 import ru.alphach1337.detour.sqlite.DataBase;
-
-import java.util.List;
 
 public class Start implements Command{
     public String getPermission(){
@@ -28,7 +25,7 @@ public class Start implements Command{
             commandSender.sendMessage("Только игроки могут использовать эту команду!");
             return;
         }
-
+        System.out.println(Bukkit.getServer().getClass().getPackage().getName());
         if(!DetourManager.getInstance().getIsDetour()) {
             DetourManager.getInstance().start();
             DataBase.insert(((Player) commandSender).getUniqueId().toString(), "party");

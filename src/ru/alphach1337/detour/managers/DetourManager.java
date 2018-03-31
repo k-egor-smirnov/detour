@@ -1,17 +1,11 @@
 package ru.alphach1337.detour.managers;
 
-import com.connorlinfoot.actionbarapi.ActionBarAPI;
-import javafx.scene.chart.PieChart;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import ru.alphach1337.detour.Detour;
-import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.sqlite.DataBase;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -46,7 +40,6 @@ public class DetourManager {
         DataBase.insert(p.getUniqueId().toString(), "ignoreplayers");
 
         DataBase.insert(p.getName(), p.getUniqueId().toString(), "idandname");
-
         Location l = p.getLocation().clone();
         DataBase.insert(p.getUniqueId().toString(), l, "locations");
         return true;
@@ -62,7 +55,7 @@ public class DetourManager {
         isDetour = false;
     }
 
-    private void createAllTables(){
+    public void createAllTables(){
         DataBase.createTable("players");
         DataBase.createTable("ignoreplayers");
         DataBase.createTable("party");
@@ -70,7 +63,7 @@ public class DetourManager {
         DataBase.createDuoTable("locations", "location");
     }
 
-    private void deleteAllTables(){
+    public void deleteAllTables(){
         DataBase.deleteTable("players");
         DataBase.deleteTable("ignoreplayers");
         DataBase.deleteTable("party");

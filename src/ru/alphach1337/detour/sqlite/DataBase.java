@@ -3,19 +3,14 @@ package ru.alphach1337.detour.sqlite;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import ru.alphach1337.detour.Settings;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import static io.netty.handler.codec.mqtt.MqttMessageBuilders.connect;
 
 public class DataBase {
-    static Connection co;
-    static Statement statement;
-    private static void open() { //открыть (создать) бд
+    private static Connection co;
+    private static Statement statement;
+    public static void open() { //открыть (создать) бд
         try {
             Class.forName("org.sqlite.JDBC");
             co = DriverManager.getConnection("jdbc:sqlite:detour.db");
@@ -25,7 +20,7 @@ public class DataBase {
         }
     }
 
-    private static void close() { //закрыть бд
+    public  static void close() { //закрыть бд
         try {
             statement.close();
             co.close();
@@ -79,15 +74,15 @@ public class DataBase {
 
     public static String selectNameById(String uuid, String table) { //получить имя по UUID
         open();
-        HashMap<String, String> map = new HashMap<>();
         String query = "SELECT  name " +
                 "FROM " + table + " WHERE uuid='" + uuid + "';";
         try {
             ResultSet rs = statement.executeQuery(query);
-            rs.next();
-            String name = rs.getString("name");
-            rs.close();
-            return name;
+            if(rs.next()) {
+                String name = rs.getString("name");
+                rs.close();
+                return name;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

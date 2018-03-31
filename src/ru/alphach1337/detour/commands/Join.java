@@ -1,16 +1,12 @@
 package ru.alphach1337.detour.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import ru.alphach1337.detour.Detour;
 import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.managers.DetourManager;
-
-import java.util.List;
 
 public class Join implements Command {
     @Override

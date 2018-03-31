@@ -16,21 +16,20 @@ class Quit {
         ArrayList<String> ignorePlayers = DataBase.selectAll("ignorePlayers");
         ArrayList<String> party = DataBase.selectAll("party");
             for(int i = 0; i < players.size(); i++){
-                if(!DetourManager.getInstance().config.getBoolean("allowOffline")) {
-                    if (event.getPlayer().getUniqueId().equals(UUID.fromString(players.get(i)))){
+                if(event.getPlayer().getUniqueId().equals(UUID.fromString(players.get(i)))) {
+                    if ((!DetourManager.getInstance().config.getBoolean("allowOffline"))) {
                         DataBase.delete(players.get(i), "players");
-                        //players.remove(i);
                         DataBase.delete(ignorePlayers.get(i), "players");
-                        //ignorePlayers.remove(i);
+                    } else {
+                        DataBase.delete(players.get(i), "locations");
+                        DataBase.insert(players.get(i), event.getPlayer().getLocation(), "locations");
                     }
                 }
-
             for(int j = 0; j < party.size(); j++){
                 Log.info(event.getPlayer().getName());
                 Log.info(party.get(j));
 
                 if(event.getPlayer().getUniqueId().equals(UUID.fromString(party.get(j)))){
-                    //party.remove(j);
                     DataBase.delete(party.get(j), "party");
 
                     for(String username : party){

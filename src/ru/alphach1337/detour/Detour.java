@@ -1,27 +1,14 @@
 package ru.alphach1337.detour;
 
-import com.connorlinfoot.actionbarapi.ActionBarAPI;
-import org.bukkit.*;
-import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.alphach1337.detour.commands.*;
 import ru.alphach1337.detour.events.EventListener;
+import ru.alphach1337.detour.managers.DetourManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class Detour extends JavaPlugin implements Listener {
@@ -46,6 +33,8 @@ public class Detour extends JavaPlugin implements Listener {
         cw.commands.add(new Party());
         cw.commands.add(new Stick());
         this.getCommand("detour").setExecutor(cw);
+
+        DetourManager.getInstance().createAllTables();
     }
 
     @Override

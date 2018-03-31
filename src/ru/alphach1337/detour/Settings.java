@@ -1,6 +1,5 @@
 package ru.alphach1337.detour;
 
-import javafx.scene.paint.Color;
 import org.bukkit.ChatColor;
 
 public class Settings {

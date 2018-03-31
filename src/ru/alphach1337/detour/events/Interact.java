@@ -1,6 +1,6 @@
 package ru.alphach1337.detour.events;
 
-import com.connorlinfoot.actionbarapi.ActionBarAPI;
+import ru.alphach1337.detour.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,6 +18,7 @@ import java.util.UUID;
 
 public class Interact {
     public Interact(PlayerInteractEvent event) {
+
         try {
             Player player = event.getPlayer();
             ArrayList<String> players = DataBase.selectAll("players");
@@ -82,13 +83,19 @@ public class Interact {
         for (int i = 0; i < players.size(); i++) {
             Player player = Bukkit.getPlayer(UUID.fromString(players.get(i)));
 
-            if (player != null && player.isOnline()) {
+            if (DetourManager.getInstance().getIsDetour() && player != null && player.isOnline()) {
                 if (i > 0) {
-                    p.sendMessage(ChatColor.GREEN + "Твое место в очереди " + i);
-                    //ActionBarAPI.sendActionBar(player, ChatColor.GREEN + "Твое место в очереди " + i, 200);
+                    try {
+                        ActionBarAPI.sendActionBar(player, ChatColor.GREEN + "Твое место в очереди " + i, 200);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
                 } else {
-                    p.sendMessage(ChatColor.YELLOW + "За вами наблюдают!");
-                    //ActionBarAPI.sendActionBar(player, ChatColor.YELLOW + "За вами наблюдают!", 500);
+                    try {
+                        ActionBarAPI.sendActionBar(player, ChatColor.YELLOW + "За вами наблюдают!", 500);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
         }
