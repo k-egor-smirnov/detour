@@ -14,6 +14,6 @@ public class Settings {
     public static String notJoined = ChatColor.RED + "В очереди нет игроков!";
     public static String alreadyStarted = ChatColor.RED + "Обход уже начался!";
     public static String onStartSubtitle = "Чтобы присоединиться, пиши /detour join";
-    public static String stick = "продам гараж haHAA";
+    public static String stick = "Посох Мегумин";
     public static String time = ChatColor.RED + "Вы отыграли недостаточно часов, чтобы зайти в обход. Необходимо: ";
 }

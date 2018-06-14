@@ -76,13 +76,13 @@ public class Next implements Command {
                 if (DetourManager.getInstance().getIsDetour() && player != null && player.isOnline()) {
                     if (i > 0) {
                         try {
-                            ActionBarAPI.sendActionBar(player, ChatColor.GREEN + "Твое место в очереди " + i, 200);
+                            ActionBarAPI.sendActionBar(player, ChatColor.GREEN + "Твое место в очереди " + i);
                         }catch(Exception e){
                             e.printStackTrace();
                         }
                     } else {
                         try {
-                            ActionBarAPI.sendActionBar(player, ChatColor.YELLOW + "За вами наблюдают!", 500);
+                            ActionBarAPI.sendActionBar(player, ChatColor.YELLOW + "За вами наблюдают!");
                         }catch (Exception e){
                             e.printStackTrace();
                         }
