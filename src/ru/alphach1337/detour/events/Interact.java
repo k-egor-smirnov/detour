@@ -1,10 +1,7 @@
 package ru.alphach1337.detour.events;
 
+import org.bukkit.*;
 import ru.alphach1337.detour.actionbarapi.ActionBarAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -21,14 +18,17 @@ public class Interact {
 
         try {
             Player player = event.getPlayer();
-            ArrayList<String> players = DataBase.selectAll("players");
-            ArrayList<String> party = DataBase.selectAll("party");
-            HashMap<String, Location> locations = DataBase.selectAllLocations("locations");
+            ArrayList<String> players = DataBase.selectAllUuids("players");
+            ArrayList<String> party = DataBase.selectAllUuids("party");
+
+            HashMap<String, String> locations = DataBase.selectAllLocations("locations");
+
             if (player.isOp() && player.getInventory().getItemInMainHand().getType() == Material.STICK && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(Settings.stick)) {
                 if (event.getAction() == Action.LEFT_CLICK_AIR && players.size() >= 0) {
                     if (DetourManager.getInstance().getIsDetour()) {
                         for (String username : party) {
-                            Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
+                            //Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
+                            Bukkit.getPlayer(UUID.fromString(username)).teleport(DetourManager.getLocationFromString(locations.get(players.get(0))));
                         }
                     } else {
                         player.sendMessage(Settings.notStarted);
@@ -48,9 +48,9 @@ public class Interact {
 
     private void next(Player p) {
         boolean isOffline = false;
-        HashMap<String, Location> locations = DataBase.selectAllLocations("locations");
-        ArrayList<String> players = DataBase.selectAll("players");
-        ArrayList<String> party = DataBase.selectAll("party");
+        HashMap<String, String> locations = DataBase.selectAllLocations("locations");
+        ArrayList<String> players = DataBase.selectAllUuids("players");
+        ArrayList<String> party = DataBase.selectAllUuids("party");
 
         if (players.size() <= 0) {
             DetourManager.getInstance().stop();
@@ -75,7 +75,9 @@ public class Interact {
             }
         } catch (Exception e) {
             for (String username : party) {
-                Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
+                //Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
+                Bukkit.getPlayer(UUID.fromString(username)).teleport(DetourManager.getLocationFromString(locations.get(players.get(0))));
+
             }
             isOffline = true;
         }
@@ -128,4 +130,6 @@ public class Interact {
             }
         }
     }
+
+
 }

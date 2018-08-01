@@ -28,7 +28,7 @@ public class Start implements Command{
         System.out.println(Bukkit.getServer().getClass().getPackage().getName());
         if(!DetourManager.getInstance().getIsDetour()) {
             DetourManager.getInstance().start();
-            DataBase.insert(((Player) commandSender).getUniqueId().toString(), "party");
+            DataBase.insertUuid(((Player) commandSender).getUniqueId().toString(), "party");
 
             Title title = new Title(Settings.Started1, Settings.onStartSubtitle);
             title.setSubtitleColor(ChatColor.YELLOW);

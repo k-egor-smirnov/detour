@@ -2,6 +2,7 @@ package ru.alphach1337.detour.managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import ru.alphach1337.detour.sqlite.DataBase;
@@ -35,13 +36,13 @@ public class DetourManager {
         if(DataBase.contains(p.getUniqueId().toString(), "players") || DataBase.contains(p.getUniqueId().toString(), "ignoreplayers")){
             return false;
         }
-        DataBase.insert(p.getUniqueId().toString(), "players");
+        DataBase.insertUuid(p.getUniqueId().toString(), "players");
 
-        DataBase.insert(p.getUniqueId().toString(), "ignoreplayers");
+        DataBase.insertUuid(p.getUniqueId().toString(), "ignoreplayers");
 
         DataBase.insert(p.getName(), p.getUniqueId().toString(), "idandname", "name");
         Location l = p.getLocation().clone();
-        DataBase.insert(p.getUniqueId().toString(), l, "locations");
+        DataBase.insertUuidAndLocation(p.getUniqueId().toString(), l, "locations");
         if(!DataBase.contains(p.getUniqueId().toString(), "counts")){
             DataBase.insert(""+0, p.getUniqueId().toString(), "counts", "count");
         }
@@ -73,5 +74,17 @@ public class DetourManager {
         DataBase.deleteTable("party");
         DataBase.deleteTable("locations");
         DataBase.deleteTable("idandname");
+    }
+
+    public static Location getLocationFromString(String locationString){
+        World world;
+        double[] xyz = new double[3];
+        String[] locs = locationString.split("&");
+        world = Bukkit.getServer().getWorld(locs[0]);
+        for (int i = 1; i <= 3; i++) {
+            xyz[i-1] = Double.parseDouble(locs[i]);
+        }
+
+        return new Location(world, xyz[0], xyz[1], xyz[2]);
     }
 }

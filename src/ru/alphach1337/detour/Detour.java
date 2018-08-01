@@ -15,7 +15,7 @@ public class Detour extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new EventListener(), this);
 
         this.getConfig().addDefault("allowOffline", true);
-        this.getConfig().addDefault("hoursToAllowDetour", 0);
+        this.getConfig().addDefault("hoursToAllowDetour", 12);
         this.getConfig().options().copyDefaults(true);
         saveConfig();
 

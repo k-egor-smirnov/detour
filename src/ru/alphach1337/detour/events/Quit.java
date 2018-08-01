@@ -2,7 +2,6 @@ package ru.alphach1337.detour.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.event.player.PlayerQuitEvent;
 import ru.alphach1337.detour.managers.DetourManager;
 import ru.alphach1337.detour.sqlite.DataBase;
@@ -12,9 +11,9 @@ import java.util.UUID;
 
 class Quit {
     Quit(PlayerQuitEvent event) {
-        ArrayList<String> players = DataBase.selectAll("players");
-        ArrayList<String> ignorePlayers = DataBase.selectAll("ignorePlayers");
-        ArrayList<String> party = DataBase.selectAll("party");
+        ArrayList<String> players = DataBase.selectAllUuids("players");
+        ArrayList<String> ignorePlayers = DataBase.selectAllUuids("ignorePlayers");
+        ArrayList<String> party = DataBase.selectAllUuids("party");
             for(int i = 0; i < players.size(); i++){
                 if(event.getPlayer().getUniqueId().equals(UUID.fromString(players.get(i)))) {
                     if (!(DetourManager.getInstance().config.getBoolean("allowOffline"))) {
@@ -22,7 +21,7 @@ class Quit {
                         DataBase.delete(ignorePlayers.get(i), "players");
                     } else {
                         DataBase.delete(players.get(i), "locations");
-                        DataBase.insert(players.get(i), event.getPlayer().getLocation(), "locations");
+                        DataBase.insertUuidAndLocation(players.get(i), event.getPlayer().getLocation(), "locations");
                     }
                 }
             for(int j = 0; j < party.size(); j++){

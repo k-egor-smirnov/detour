@@ -34,9 +34,11 @@ public class Next implements Command {
             }
 
             boolean isOffline = false;
-            ArrayList<String> players = DataBase.selectAll("players");
-            ArrayList<String> party = DataBase.selectAll("party");
-            HashMap<String, Location> locations = DetourManager.getInstance().locations;
+            ArrayList<String> players = DataBase.selectAllUuids("players");
+            ArrayList<String> party = DataBase.selectAllUuids("party");
+//            HashMap<String, Location> locations = DetourManager.getInstance().locations;
+            HashMap<String, String> locations = DataBase.selectAllLocations("locations");
+
 
             Player p = (Player) commandSender;
 
@@ -64,7 +66,9 @@ public class Next implements Command {
 
             } catch (Exception e) {
                 for (String username : party) {
-                    Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
+//                    Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
+                    Bukkit.getPlayer(UUID.fromString(username)).teleport(DetourManager.getLocationFromString(locations.get(players.get(0))));
+
                 }
                 isOffline = true;
             }

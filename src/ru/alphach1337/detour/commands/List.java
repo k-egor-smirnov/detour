@@ -20,7 +20,7 @@ public class List implements Command{
     @Override
     public void execute(CommandSender commandSender, org.bukkit.command.Command command, String[] args) {
         try {
-            ArrayList<String> players = DataBase.selectAll("players");
+            ArrayList<String> players = DataBase.selectAllUuids("players");
             int count = players.size();
 
             for (int i = 0; i < players.size(); i++) {

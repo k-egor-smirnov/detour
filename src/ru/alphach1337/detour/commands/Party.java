@@ -43,7 +43,7 @@ public class Party implements Command{
                         if(DataBase.contains(args[2], "party")){
                             commandSender.sendMessage(ChatColor.RED + "Игрок уже в команде!");
                         }else {
-                            DataBase.insert(args[2], "party");
+                            DataBase.insertUuid(args[2], "party");
                             commandSender.sendMessage(ChatColor.GREEN + "Вы добавили игрока " + args[2] + " в команду для обхода");
                         }
 

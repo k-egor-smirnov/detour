@@ -54,7 +54,7 @@ public class DataBase {
         close();
     }
 
-    public static ArrayList<String> selectAll(String table) { //получить список uuid игроков
+    public static ArrayList<String> selectAllUuids(String table) {
         open();
         ArrayList<String> list = new ArrayList<>();
         String query = "SELECT uuid " +
@@ -72,7 +72,7 @@ public class DataBase {
         return list;
     }
 
-    public static String selectById(String uuid, String table, String column) { //получить информацию по UUID
+    public static String selectById(String uuid, String table, String column) {
         open();
         String query = "SELECT "+ column +
                 " FROM " + table + " WHERE uuid='" + uuid + "';";
@@ -90,7 +90,23 @@ public class DataBase {
         return null;
     }
 
-    public static HashMap<String, Location> selectAllLocations(String table) { //получить мапу uuid:location
+    public static HashMap<String, String> selectAllLocations(String table) { //получить мапу uuid:location
+        open();
+        HashMap<String, String> map = new HashMap<>();
+        String query = "SELECT uuid, location " +
+                "FROM " + table;
+        try(ResultSet rs = statement.executeQuery(query)) {
+            while (rs.next()) {
+                String loc = rs.getString("location");
+                String uuid = rs.getString("uuid");
+                map.put(uuid, loc);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        close();
+        return map;
+    }/*public static HashMap<String, Location> selectAllLocations(String table) { //получить мапу uuid:location
         open();
         HashMap<String, Location> map = new HashMap<>();
         String query = "SELECT uuid, location " +
@@ -112,9 +128,9 @@ public class DataBase {
         }
         close();
         return map;
-    }
+    }*/
 
-    public static void insert(String uuid, Location location, String table) { //вставить запись uuid:location
+    public static void insertUuidAndLocation(String uuid, Location location, String table) { //вставить запись uuid:location
         open();
         try {
             String loc = location.getWorld().getName() + "&" + location.getX() + "&" + location.getY() + "&" + location.getZ();
@@ -128,7 +144,7 @@ public class DataBase {
         close();
     }
 
-    public static void insert(String uuid, String table) { //вставить uuid ользователя в таблицу
+    public static void insertUuid(String uuid, String table) { //вставить uuid ользователя в таблицу
         open();
         try {
             String query = "INSERT INTO " + table + " (uuid) " +
@@ -156,7 +172,7 @@ public class DataBase {
 
     public static boolean contains(String uuid, String table) { //проверить, есть uuid игрока в таблице
         try {
-            ArrayList<String> list = selectAll(table);
+            ArrayList<String> list = selectAllUuids(table);
             for (String s : list) {
                 if (uuid.equals(s)) return true;
             }
