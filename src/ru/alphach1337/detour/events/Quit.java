@@ -12,14 +12,12 @@ import java.util.UUID;
 
 class Quit {
     Quit(PlayerQuitEvent event) {
-        System.out.println("Quit");
         ArrayList<String> players = DataBase.selectAll("players");
         ArrayList<String> ignorePlayers = DataBase.selectAll("ignorePlayers");
         ArrayList<String> party = DataBase.selectAll("party");
             for(int i = 0; i < players.size(); i++){
                 if(event.getPlayer().getUniqueId().equals(UUID.fromString(players.get(i)))) {
                     if (!(DetourManager.getInstance().config.getBoolean("allowOffline"))) {
-                        System.out.println("удалён");
                         DataBase.delete(players.get(i), "players");
                         DataBase.delete(ignorePlayers.get(i), "players");
                     } else {

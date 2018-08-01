@@ -11,7 +11,7 @@ import ru.alphach1337.detour.managers.DetourManager;
 public class Join implements Command {
     @Override
     public String getPermission() {
-        return "detour.join";
+        return "detour.member";
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Join implements Command {
         Player player = (Player) commandSender;
         FileConfiguration config = DetourManager.getInstance().config;
 
-            if (player.getStatistic(Statistic.PLAY_ONE_TICK) * 50L <= (config.getInt("hoursToAllowDetour") * 60 * 60 * 1000)) {
+            if (player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 60 <= (config.getInt("hoursToAllowDetour") * 60 * 60 * 1000)) {
                 player.sendMessage(Settings.time + ChatColor.YELLOW + config.getInt("hoursToAllowDetour"));
             } else {
                 if (DetourManager.getInstance().addPlayer(player)) {

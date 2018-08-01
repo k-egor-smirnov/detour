@@ -31,9 +31,7 @@ public class ActionBarAPI extends JavaPlugin implements Listener {
         ConsoleCommandSender console = server.getConsoleSender();
 
         nmsver = Bukkit.getServer().getClass().getPackage().getName();
-        System.out.println("before substring " + nmsver);
         nmsver = nmsver.substring(nmsver.lastIndexOf(".") + 1);
-        System.out.println("after substring " + nmsver);
         if (nmsver.equalsIgnoreCase("v1_8_R1") || nmsver.startsWith("v1_7_")) { // Not sure if 1_7 works for the protocol hack?
             useOldMethods = true;
         }
@@ -61,9 +59,7 @@ public class ActionBarAPI extends JavaPlugin implements Listener {
 
         try {
             String nmsver = Bukkit.getServer().getClass().getPackage().getName();
-            System.out.println("before substring " + nmsver);
             nmsver = nmsver.substring(nmsver.lastIndexOf(".") + 1);
-            System.out.println("after substring " + nmsver);
             Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsver + ".entity.CraftPlayer");
             Object craftPlayer = craftPlayerClass.cast(player);
             Object ppoc;

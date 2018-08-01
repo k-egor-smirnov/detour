@@ -39,9 +39,12 @@ public class DetourManager {
 
         DataBase.insert(p.getUniqueId().toString(), "ignoreplayers");
 
-        DataBase.insert(p.getName(), p.getUniqueId().toString(), "idandname");
+        DataBase.insert(p.getName(), p.getUniqueId().toString(), "idandname", "name");
         Location l = p.getLocation().clone();
         DataBase.insert(p.getUniqueId().toString(), l, "locations");
+        if(!DataBase.contains(p.getUniqueId().toString(), "counts")){
+            DataBase.insert(""+0, p.getUniqueId().toString(), "counts", "count");
+        }
         return true;
     }
 
@@ -61,6 +64,7 @@ public class DetourManager {
         DataBase.createTable("party");
         DataBase.createDuoTable("idandname",  "name");
         DataBase.createDuoTable("locations", "location");
+
     }
 
     public void deleteAllTables(){

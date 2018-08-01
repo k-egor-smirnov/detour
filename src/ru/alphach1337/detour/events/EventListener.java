@@ -15,9 +15,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        System.out.println("onPlayerQuit before Quit");
         new Quit(event);
-        System.out.println("onPlayerQuit after Quit");
     }
 
     @EventHandler

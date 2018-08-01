@@ -46,7 +46,7 @@ public class DataBase {
         try {
             String query = "CREATE TABLE IF NOT EXISTS " + table + " (" +
                     column + " VARCHAR(100), " +
-                     "uuid VARCHAR(100));";
+                     "uuid VARCHAR(50));";
             statement.execute(query);
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,16 +72,16 @@ public class DataBase {
         return list;
     }
 
-    public static String selectNameById(String uuid, String table) { //получить имя по UUID
+    public static String selectById(String uuid, String table, String column) { //получить информацию по UUID
         open();
-        String query = "SELECT  name " +
-                "FROM " + table + " WHERE uuid='" + uuid + "';";
+        String query = "SELECT "+ column +
+                " FROM " + table + " WHERE uuid='" + uuid + "';";
         try {
             ResultSet rs = statement.executeQuery(query);
             if(rs.next()) {
-                String name = rs.getString("name");
+                String data = rs.getString(column);
                 rs.close();
-                return name;
+                return data;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -141,11 +141,11 @@ public class DataBase {
         close();
     }
 
-    public static void insert(String name, String uuid, String table) { //вставить запись uuid:name где name - имя игрока
+    public static void insert(String data, String uuid, String table, String column) { //вставить запись uuid:something
         open();
         try {
-            String query = "INSERT INTO " + table + " (uuid, name) " +
-                    "VALUES('" + uuid + "', '" + name + "');";
+            String query = "INSERT INTO " + table + " (uuid, " + column + ") " +
+                    "VALUES('" + uuid + "', '" + data + "');";
             statement.executeUpdate(query);
             statement.close();
         } catch (SQLException e) {

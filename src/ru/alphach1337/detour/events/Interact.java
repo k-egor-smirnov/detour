@@ -102,13 +102,25 @@ public class Interact {
 
         for (String s : locations.keySet()) {
             if (players.get(0).equals(s)) {
+                int count = 0;
+                try {
+                    count = Integer.parseInt(DataBase.selectById(s, "counts", "count"));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                ++count;
+                DataBase.delete(s, "counts");
+                DataBase.insert(""+count, s, "counts", "count");
+
+                String str = DataBase.selectById(s, "idandname", "name");
                 if (!isOffline) {
-                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + Bukkit.getPlayer(UUID.fromString(s)).getName());
+                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + str + ChatColor.GREEN + ". Это его " + count + " обход.");
                     p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (players.size() - 1));
                 } else {
-                    String str = DataBase.selectNameById(s, "idandname");
 
-                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + str + ChatColor.RED + " (оффлайн)");
+                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + str + ChatColor.RED + " (оффлайн)"
+                            + ChatColor.GREEN + ". Это его " + count + " обход.");
                     p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (players.size() - 1));
                 }
                 DataBase.delete(players.get(0), "players");

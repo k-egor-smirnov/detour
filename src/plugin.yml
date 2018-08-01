@@ -1,35 +1,47 @@
 name: Detour
-version: 1.3.0
-author: AlphaCH1337 
+version: 1.4.0
+description: Плагин для обхода игроков
+author: AlphaCH1337
+authors: [AlphaCH1337, OgyreZ_1]
 main: ru.alphach1337.detour.Detour
+database: true
+
 commands:
-    detour:
-      start:
-        description: Начинает обход
-        permission: detour.manage
-        usage: /detour start
-      stop:
-        description: Заканчивает обход
-        permission: detour.manage
-        usage: /detour stop
-      join:
-        description: Присоединиться к обходу
-        permission: detour.join
-        usage: /detour join
-      next:
-        descrption: Следующий игрок
-        permission: detour.manage
-        usage: /detour next
-      usage: /detour [start, stop, join, next]
+  detour:
+    start:
+      description: Начинает обход
+      permission: detour.manage
+      usage: /detour start
+    stop:
+      description: Заканчивает обход
+      permission: detour.manage
+      usage: /detour stop
+    next:
+      descrption: Следующий игрок
+      permission: detour.manage
+      usage: /detour next
+    join:
+      description: Присоединиться к обходу
+      permission: detour.member
+      usage: /detour join
+    quit:
+      description: Выйти из обхода
+      permission: detour.member
+      usage: /detour quit
+    list:
+      description: Посмотреть очередь обхода
+      permission: detour.member
+      usage: /detour list
+    usage: /detour [start, stop, join, next, quit, list]
 permissions:
   detour.*:
     description: Дает доступ ко всем командам обхода
     children:
       detour.manage: true
-      detour.join: true
+      detour.member: true
   detour.manage:
-    description: Дает доступ к управлению (начать/остановить/переход) обходом
+    description: Дает доступ к командам start, stop
     default: false
-  detour.join:
-    description: Дает доступ к присоединению к обходу
+  detour.member:
+    description: Дает доступ к командам join, quit, list
     default: true
