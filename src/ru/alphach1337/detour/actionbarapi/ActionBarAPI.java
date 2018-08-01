@@ -18,7 +18,7 @@ public class ActionBarAPI extends JavaPlugin implements Listener {
     public static Plugin plugin;
     public static boolean works = true;
     public static String nmsver;
-    private static boolean useOldMethods = false;
+    public static boolean useOldMethods = false;
 
     public void onEnable() {
         plugin = this;

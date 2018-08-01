@@ -1,13 +1,10 @@
 package ru.alphach1337.detour.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.alphach1337.detour.sqlite.DataBase;
-
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class List implements Command{
     @Override
