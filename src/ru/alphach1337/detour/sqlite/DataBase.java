@@ -18,7 +18,7 @@ public class DataBase {
         }
     }
 
-    public  static void close() { //закрыть бд
+    public  static void close() {
         try {
             statement.close();
             co.close();
@@ -27,7 +27,7 @@ public class DataBase {
         }
     }
 
-    public static void createTable(String table) { //создать таблицу с uuid игроков
+    public static void createUuidTable(String table) {
         open();
         try {
             String query = "CREATE TABLE IF NOT EXISTS " + table + " (" +
@@ -39,7 +39,7 @@ public class DataBase {
         close();
     }
 
-    public static void createDuoTable(String table, String column) { //создать таблицу с двумя столбцами
+    public static void createDuoTable(String table, String column) {
         open();
         try {
             String query = "CREATE TABLE IF NOT EXISTS " + table + " (" +

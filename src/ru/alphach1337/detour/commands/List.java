@@ -24,7 +24,7 @@ public class List implements Command{
             int count = players.size();
 
             for (int i = 0; i < players.size(); i++) {
-                String name = DataBase.selectById(players.get(i), "idandname", "name");
+                String name = DataBase.selectById(players.get(i), "idsAndNames", "name");
                 players.set(i, name);
             }
 

@@ -1,7 +1,7 @@
 package ru.alphach1337.detour.events;
 
 import org.bukkit.*;
-import ru.alphach1337.detour.actionbarapi.ActionBarAPI;
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -27,7 +27,6 @@ public class Interact {
                 if (event.getAction() == Action.LEFT_CLICK_AIR && players.size() >= 0) {
                     if (DetourManager.getInstance().getIsDetour()) {
                         for (String username : party) {
-                            //Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
                             Bukkit.getPlayer(UUID.fromString(username)).teleport(DetourManager.getLocationFromString(locations.get(players.get(0))));
                         }
                     } else {
@@ -75,7 +74,6 @@ public class Interact {
             }
         } catch (Exception e) {
             for (String username : party) {
-                //Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
                 Bukkit.getPlayer(UUID.fromString(username)).teleport(DetourManager.getLocationFromString(locations.get(players.get(0))));
 
             }
@@ -115,7 +113,7 @@ public class Interact {
                 DataBase.delete(s, "counts");
                 DataBase.insert(""+count, s, "counts", "count");
 
-                String str = DataBase.selectById(s, "idandname", "name");
+                String str = DataBase.selectById(s, "idsAndNames", "name");
                 if (!isOffline) {
                     p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + str + ChatColor.GREEN + ". Это его " + count + " обход.");
                     p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (players.size() - 1));

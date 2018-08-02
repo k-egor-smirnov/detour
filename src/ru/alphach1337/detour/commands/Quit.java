@@ -20,12 +20,12 @@ public class Quit implements Command {
     public void execute(CommandSender commandSender, org.bukkit.command.Command command, String[] args) {
         Player player = (Player) commandSender;
 
-        if(DataBase.contains(player.getUniqueId().toString(), "players")){
+        if (DataBase.contains(player.getUniqueId().toString(), "players")){
             DataBase.delete(player.getUniqueId().toString(), "players");
-            DataBase.delete(player.getUniqueId().toString(), "ignoreplayers");
+            DataBase.delete(player.getUniqueId().toString(), "ignorePlayers");
             DataBase.delete(player.getUniqueId().toString(), "locations");
             player.sendMessage(Settings.deletedFromList);
-        }else{
+        } else {
             player.sendMessage(Settings.notAdded);
         }
     }

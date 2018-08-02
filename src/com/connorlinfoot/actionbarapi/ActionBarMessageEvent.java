@@ -1,4 +1,4 @@
-package ru.alphach1337.detour.actionbarapi;
+package com.connorlinfoot.actionbarapi;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

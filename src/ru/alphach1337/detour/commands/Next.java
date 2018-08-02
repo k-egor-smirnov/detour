@@ -1,9 +1,8 @@
 package ru.alphach1337.detour.commands;
 
-import ru.alphach1337.detour.actionbarapi.ActionBarAPI;
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.alphach1337.detour.Settings;
@@ -36,7 +35,6 @@ public class Next implements Command {
             boolean isOffline = false;
             ArrayList<String> players = DataBase.selectAllUuids("players");
             ArrayList<String> party = DataBase.selectAllUuids("party");
-//            HashMap<String, Location> locations = DetourManager.getInstance().locations;
             HashMap<String, String> locations = DataBase.selectAllLocations("locations");
 
 
@@ -66,7 +64,6 @@ public class Next implements Command {
 
             } catch (Exception e) {
                 for (String username : party) {
-//                    Bukkit.getPlayer(UUID.fromString(username)).teleport(locations.get(players.get(0)));
                     Bukkit.getPlayer(UUID.fromString(username)).teleport(DetourManager.getLocationFromString(locations.get(players.get(0))));
 
                 }
@@ -104,17 +101,17 @@ public class Next implements Command {
 
                     ++count;
                     DataBase.delete(s, "counts");
-                    DataBase.insert(""+count, s, "counts", "count");
+                    DataBase.insert("" + count, s, "counts", "count");
 
-                    String str = DataBase.selectById(s, "idandname", "name");
+                    String str = DataBase.selectById(s, "idsAndNames", "name");
                     if (!isOffline) {
-                        p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + str + ChatColor.GREEN + ". Это его " + count + " обход.");
-                        p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (players.size() - 1));
+                        p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + str + ChatColor.GREEN + ". Это его " + count + " обход."
+                                         + "\n " + ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (players.size() - 1));
                     } else {
 
                         p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + str + ChatColor.RED + " (оффлайн)"
-                                        + ChatColor.GREEN + ". Это его " + count + " обход.");
-                        p.sendMessage(ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (players.size() - 1));
+                                        + ChatColor.GREEN + ". Это его " + count + " обход." +
+                                "\n" + ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (players.size() - 1));
                     }
                     DataBase.delete(players.get(0), "players");
                     return;

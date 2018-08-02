@@ -13,11 +13,7 @@ import java.util.HashMap;
 public class DetourManager {
     private static final DetourManager INSTANCE = new DetourManager();
 
-    //public ArrayList<String> players;
-    public HashMap<String, Location> locations;
-    public ArrayList<String> ignorePlayers;
     public FileConfiguration config = Bukkit.getPluginManager().getPlugin("Detour").getConfig();
-    public ArrayList<String> party;
 
     private boolean isDetour = false;
 
@@ -33,14 +29,14 @@ public class DetourManager {
     }
 
     public boolean addPlayer(Player p){
-        if(DataBase.contains(p.getUniqueId().toString(), "players") || DataBase.contains(p.getUniqueId().toString(), "ignoreplayers")){
+        if(DataBase.contains(p.getUniqueId().toString(), "players") || DataBase.contains(p.getUniqueId().toString(), "ignorePlayers")){
             return false;
         }
         DataBase.insertUuid(p.getUniqueId().toString(), "players");
 
-        DataBase.insertUuid(p.getUniqueId().toString(), "ignoreplayers");
+        DataBase.insertUuid(p.getUniqueId().toString(), "ignorePlayers");
 
-        DataBase.insert(p.getName(), p.getUniqueId().toString(), "idandname", "name");
+        DataBase.insert(p.getName(), p.getUniqueId().toString(), "idsAndNames", "name");
         Location l = p.getLocation().clone();
         DataBase.insertUuidAndLocation(p.getUniqueId().toString(), l, "locations");
         if(!DataBase.contains(p.getUniqueId().toString(), "counts")){
@@ -60,20 +56,20 @@ public class DetourManager {
     }
 
     public void createAllTables(){
-        DataBase.createTable("players");
-        DataBase.createTable("ignoreplayers");
-        DataBase.createTable("party");
-        DataBase.createDuoTable("idandname",  "name");
+        DataBase.createUuidTable("players");
+        DataBase.createUuidTable("ignorePlayers");
+        DataBase.createUuidTable("party");
+        DataBase.createDuoTable("idsAndNames",  "name");
         DataBase.createDuoTable("locations", "location");
 
     }
 
     public void deleteAllTables(){
         DataBase.deleteTable("players");
-        DataBase.deleteTable("ignoreplayers");
+        DataBase.deleteTable("ignorePlayers");
         DataBase.deleteTable("party");
         DataBase.deleteTable("locations");
-        DataBase.deleteTable("idandname");
+        DataBase.deleteTable("idsAndNames");
     }
 
     public static Location getLocationFromString(String locationString){

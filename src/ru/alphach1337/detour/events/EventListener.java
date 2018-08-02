@@ -1,6 +1,5 @@
 package ru.alphach1337.detour.events;
 
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
