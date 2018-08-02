@@ -23,8 +23,7 @@ public class Join implements Command {
     public void execute(CommandSender commandSender, org.bukkit.command.Command command, String[] args) {
         Player player = (Player) commandSender;
         FileConfiguration config = DetourManager.getInstance().config;
-
-            if (player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 60 <= (config.getInt("hoursToAllowDetour") * 3_600_000)) {
+        if (player.getStatistic(Statistic.PLAY_ONE_MINUTE) * 50L <= (config.getInt("hoursToAllowDetour") * 60 * 60 * 1000)) {
                 player.sendMessage(Settings.time + ChatColor.YELLOW + config.getInt("hoursToAllowDetour"));
             } else {
                 if (DetourManager.getInstance().addPlayer(player)) {
