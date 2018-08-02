@@ -1,8 +1,6 @@
 package ru.alphach1337.detour.sqlite;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
