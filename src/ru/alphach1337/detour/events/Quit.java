@@ -2,36 +2,41 @@ package ru.alphach1337.detour.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.event.player.PlayerQuitEvent;
 import ru.alphach1337.detour.managers.DetourManager;
+import ru.alphach1337.detour.sqlite.DataBase;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 class Quit {
     Quit(PlayerQuitEvent event) {
-        if (DetourManager.getInstance().getIsDetour()) {
-            for(int i = 0; i < DetourManager.getInstance().players.size(); i++){
-                if(!DetourManager.getInstance().config.getBoolean("allowOffline")) {
-                    if (event.getPlayer().getName().equalsIgnoreCase(DetourManager.getInstance().players.get(i))) {
-                        DetourManager.getInstance().players.remove(i);
-						DetourManager.getInstance().ignorePlayers.remove(i);
+        ArrayList<String> players = DataBase.selectAllUuids("players");
+        ArrayList<String> ignorePlayers = DataBase.selectAllUuids("ignorePlayers");
+        ArrayList<String> party = DataBase.selectAllUuids("party");
+            for(int i = 0; i < players.size(); i++){
+                if(event.getPlayer().getUniqueId().equals(UUID.fromString(players.get(i)))) {
+                    if (!(DetourManager.getInstance().config.getBoolean("allowOffline"))) {
+                        DataBase.delete(players.get(i), "players");
+                        DataBase.delete(ignorePlayers.get(i), "players");
+                    } else {
+                        DataBase.delete(players.get(i), "locations");
+                        DataBase.insertUuidAndLocation(players.get(i), event.getPlayer().getLocation(), "locations");
                     }
                 }
-            }
+            for(int j = 0; j < party.size(); j++){
+                /*Log.info(event.getPlayer().getName());
+                Log.info(party.get(j));*/
 
-            for(int j = 0; j < DetourManager.getInstance().party.size(); j++){
-                Log.info(event.getPlayer().getName());
-                Log.info(DetourManager.getInstance().party.get(j));
+                if(event.getPlayer().getUniqueId().equals(UUID.fromString(party.get(j)))){
+                    DataBase.delete(party.get(j), "party");
 
-                if(event.getPlayer().getName().equals(DetourManager.getInstance().party.get(j))){
-                    DetourManager.getInstance().party.remove(j);
-
-                    for(String username : DetourManager.getInstance().party){
-                        Bukkit.getPlayer(username).sendMessage(ChatColor.RED + "Игрок " + event.getPlayer().getName() + " вышел из группы");
+                    for(String username : party){
+                        Bukkit.getPlayer(UUID.fromString(username)).sendMessage(ChatColor.RED + "Игрок " + event.getPlayer().getName() + " вышел из группы");
                     }
                 }
             }
 
         }
-
     }
 }

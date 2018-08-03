@@ -1,6 +1,5 @@
 package ru.alphach1337.detour;
 
-import javafx.scene.paint.Color;
 import org.bukkit.ChatColor;
 
 public class Settings {
@@ -12,9 +11,11 @@ public class Settings {
             + ", чтобы присоединиться";
     public static String alreadyInTheList = ChatColor.RED + "Ты уже участвуешь в обходе!";
     public static String addedToList = ChatColor.GREEN + "Теперь ты участвуешь в обходе!";
+    public static String deletedFromList = ChatColor.GREEN + "Теперь ты не участвуешь в обходе!";
+    public static String notAdded = ChatColor.RED + "Ты и так не участвовал в обходе!";
     public static String notJoined = ChatColor.RED + "В очереди нет игроков!";
     public static String alreadyStarted = ChatColor.RED + "Обход уже начался!";
     public static String onStartSubtitle = "Чтобы присоединиться, пиши /detour join";
-    public static String stick = "посох Мегумин";
+    public static String stick = "Посох Мегумин";
     public static String time = ChatColor.RED + "Вы отыграли недостаточно часов, чтобы зайти в обход. Необходимо: ";
 }

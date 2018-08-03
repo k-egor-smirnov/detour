@@ -1,6 +1,5 @@
 package ru.alphach1337.detour.events;
 
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerJoinEvent;
 import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.managers.DetourManager;

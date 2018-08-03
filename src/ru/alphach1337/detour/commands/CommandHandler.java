@@ -2,7 +2,6 @@ package ru.alphach1337.detour.commands;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 
 import java.util.ArrayList;
 
