@@ -1,12 +1,7 @@
 package ru.alphach1337.detour.sqlite;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import ru.alphach1337.detour.Settings;
-import ru.alphach1337.detour.managers.DetourManager;
 import ru.alphach1337.detour.models.EventParticipant;
 
 import java.sql.*;
@@ -99,8 +94,6 @@ public class Database {
 
             while (rs.next()) {
                 EventParticipant participant = new EventParticipant(rs);
-
-                Log.info(Bukkit.getPlayer(participant.getUUID()));
 
                 participants.add(participant);
             }
