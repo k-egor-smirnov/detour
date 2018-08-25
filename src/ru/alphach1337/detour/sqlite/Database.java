@@ -17,7 +17,6 @@ public class Database {
     private static Database instance;
 
     private static Connection co;
-    private static Statement statement;
 
     public static Database getInstance() {
         if (instance == null) {
@@ -27,19 +26,20 @@ public class Database {
         return instance;
     }
 
-    private void open() {
+    private void connect() {
         try {
-            Class.forName("org.sqlite.JDBC");
-            co = DriverManager.getConnection("jdbc:sqlite:detour.db");
-            statement = co.createStatement();
-        } catch (Exception e) {
-            e.printStackTrace();
+            String url = "jdbc:sqlite:detour.db";
+            co = DriverManager.getConnection(url);
+
+            Bukkit.getLogger().info("Detour database initialized");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    private void close() {
+
+    public void close() {
         try {
-            statement.close();
             co.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,9 +47,11 @@ public class Database {
     }
 
     public int init() {
-        open();
+        connect();
 
         try {
+            Statement statement = co.createStatement();
+
             String queryJoins = "CREATE TABLE IF NOT EXISTS `joins` (\n" +
                     "\t`uuid`\tCHAR ( 36 ) NOT NULL,\n" +
                     "\t`event`\tINT ( 4 ),\n" +
@@ -78,27 +80,27 @@ public class Database {
             e.printStackTrace();
         }
 
-        close();
-
         return -1;
     }
 
     public ArrayList<EventParticipant> getPlayers(int eventId, boolean includeIgnored, boolean reviewer) {
-        open();
-
         ArrayList<EventParticipant> participants = new ArrayList<EventParticipant>();
 
         String query = "SELECT * " +
                 "FROM " + Settings.joinsTable + " " +
                 "WHERE event = " + eventId + " " +
-                (includeIgnored ? "" : " AND ignore = false") +
-                " AND reviewer = " + reviewer;
+                (includeIgnored ? " " : " AND ignore = false ") +
+                "AND reviewer = " + reviewer;
 
-        try (ResultSet rs = statement.executeQuery(query)) {
-            double[] coordinates = new double[3];
+        try {
+            Statement statement = co.createStatement();
+
+            ResultSet rs = statement.executeQuery(query);
 
             while (rs.next()) {
                 EventParticipant participant = new EventParticipant(rs);
+
+                Log.info(Bukkit.getPlayer(participant.getUUID()));
 
                 participants.add(participant);
             }
@@ -106,29 +108,24 @@ public class Database {
             e.printStackTrace();
         }
 
-        close();
-
         return participants;
     }
 
     public void setPlayer(EventParticipant eventParticipant) {
-        open();
-
         try {
+            Statement statement = co.createStatement();
             statement.execute(eventParticipant.getSQLUpdateQuery());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        close();
     }
 
     public EventParticipant getPlayerInEvent(int event, UUID uuid) {
-        open();
-
         EventParticipant participant = null;
 
         try {
+            Statement statement = co.createStatement();
+
             String query = "SELECT * FROM " + Settings.joinsTable + " " +
                     "WHERE event = " + event + " AND uuid = '" + uuid + "'";
 
@@ -141,8 +138,6 @@ public class Database {
             e.printStackTrace();
         }
 
-        close();
-
         return participant;
     }
 
@@ -151,38 +146,36 @@ public class Database {
 
         if (existParticipant != null) return false;
 
-        open();
-
         try {
+            Statement statement = co.createStatement();
+
             String query = participant.getSQLInsertQuery();
             statement.execute(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        close();
-
         return true;
     }
 
     public void removePlayerFromEvent(int event, EventParticipant participant) {
-        open();
-
         try {
+            Statement statement = co.createStatement();
+
             String query = participant.getSQLDeleteQuery();
             statement.execute(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        close();
     }
 
     public int startEvent() {
-        open();
-
         int eventId = -1;
+
         try {
+            Statement statement = co.createStatement();
+
             String queryInsert = "INSERT INTO events DEFAULT VALUES;" ;
             String queryGetId = "SELECT last_insert_rowid() FROM events LIMIT 1";
 
@@ -200,15 +193,13 @@ public class Database {
             e.printStackTrace();
         }
 
-        close();
-
         return eventId;
     }
 
     public void closeAllEvents() {
-        open();
-
         try {
+            Statement statement = co.createStatement();
+
             String query = "UPDATE events SET " +
                     "active = false" ;
 
@@ -216,7 +207,5 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        close();
     }
 }

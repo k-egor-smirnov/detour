@@ -1,6 +1,7 @@
 package ru.alphach1337.detour.managers;
 
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
+import com.mysql.fabric.xmlrpc.base.Array;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -51,7 +52,16 @@ public class DetourManager {
     }
 
     public void stop() {
+        ArrayList<EventParticipant> participants =
+                Database.getInstance().getPlayers(eventId, true, false);
+
+        participants.forEach((k) -> System.out.println(Bukkit.getPlayer(k.getUUID()).getDisplayName() + " | "));
+
         Database.getInstance().closeAllEvents();
+        Bukkit.broadcastMessage(Settings.stopDetour);
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "Было пройдено игроков: " + ChatColor.DARK_PURPLE + participants.size() +
+                ChatColor.YELLOW + " за " + ChatColor.DARK_PURPLE + 20 + ChatColor.YELLOW + " минут");
+
         eventId = -1;
     }
 
@@ -72,7 +82,6 @@ public class DetourManager {
 
             if (participants.size() <= 0) {
                 DetourManager.getInstance().stop();
-                Bukkit.broadcastMessage(Settings.stopDetour);
 
                 return;
             }

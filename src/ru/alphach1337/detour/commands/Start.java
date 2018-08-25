@@ -71,6 +71,9 @@ public class Start extends DetourCommand {
             Bukkit.broadcastMessage(Settings.Started1);
             Bukkit.broadcastMessage(Settings.Started2);
 
+            commandSender.sendMessage(ChatColor.YELLOW + "Вы можете проводить совместные обходы с помощью команды\n" +
+                    ChatColor.DARK_AQUA + "/detour " + ChatColor.BLUE + "party add " + ChatColor.WHITE + "<username>");
+
             return true;
         } else {
             commandSender.sendMessage(Settings.alreadyStarted);

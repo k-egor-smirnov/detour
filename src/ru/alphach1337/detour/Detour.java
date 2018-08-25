@@ -40,6 +40,6 @@ public class Detour extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-
+        Database.getInstance().close();
     }
 }

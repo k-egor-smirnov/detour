@@ -108,7 +108,8 @@ public class EventParticipant {
                 "event = " + this.getEvent() + ", " +
                 "reviewer = " + this.getIsReviewer() + ", " +
                 "ignore = " + this.isIgnore() + " " +
-                "WHERE event = " + this.getEvent();
+                "WHERE event = " + this.getEvent() + " " +
+                "AND uuid = '" + this.getUUID() + "'";
     }
 
     public String getSQLInsertQuery() {
