@@ -17,31 +17,11 @@ class Quit {
 
         boolean allowOffline = detourManager.getConfig().getBoolean("allowOffline");
 
-        ArrayList<EventParticipant> players = database.getPlayers(detourManager.getEventId(), false, false);
-
-//        for (int i = 0; i < players.size(); i++) {
-//            if (event.getPlayer().getUniqueId().equals(players.get(i).getUUID())) {
-//                if (allowOffline)) {
-//                    Database.delete(players.get(i), "players");
-//                    Database.delete(ignorePlayers.get(i), "players");
-//                } else {
-//                    Database.delete(players.get(i), "locations");
-//                    Database.insertUuidAndLocation(players.get(i), event.getPlayer().getLocation(), "locations");
-//                }
-//            }
-//            for (int j = 0; j < party.size(); j++) {
-//                /*Log.info(event.getPlayer().getName());
-//                Log.info(party.get(j));*/
-//
-//                if (event.getPlayer().getUniqueId().equals(UUID.fromString(party.get(j)))) {
-//                    Database.delete(party.get(j), "party");
-//
-//                    for (String username : party) {
-//                        Bukkit.getPlayer(UUID.fromString(username)).sendMessage(ChatColor.RED + "Игрок " + event.getPlayer().getName() + " вышел из группы");
-//                    }
-//                }
-//            }
-//
-//        }
+        if (!allowOffline) {
+            database.removePlayerFromEvent(detourManager.getEventId(), new EventParticipant(
+                    detourManager.getEventId(),
+                    event.getPlayer()
+            ));
+        }
     }
 }
