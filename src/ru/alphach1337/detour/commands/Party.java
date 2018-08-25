@@ -83,6 +83,10 @@ public class Party extends DetourCommand {
                                     player.getUniqueId()
                             );
 
+                    if (participant == null) {
+                        participant = new EventParticipant(DetourManager.getInstance().getEventId(), player);
+                    }
+
                     if (participant.getIsReviewer()) {
                         commandSender.sendMessage(ChatColor.RED + "Игрок уже в команде!");
                     } else {
@@ -91,7 +95,7 @@ public class Party extends DetourCommand {
 
                         commandSender.sendMessage(ChatColor.GREEN + "Вы добавили игрока " + args[2] + " в команду для обхода");
                         player.sendMessage(ChatColor.GREEN + "Вы добавлены в команду для обхода");
-                        player.setGameMode(GameMode.valueOf(DetourManager.getInstance().getConfig().getString("partyGameMode")));
+                        player.setGameMode(GameMode.SPECTATOR);
                     }
 
                 } else {

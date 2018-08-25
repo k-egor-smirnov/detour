@@ -27,6 +27,10 @@ public class DetourManager {
         return eventId != -1;
     }
 
+    public void setEvent(int event) {
+        this.eventId = event;
+    }
+
     public int getEventId() {
         return eventId;
     }
@@ -51,20 +55,20 @@ public class DetourManager {
         eventId = -1;
     }
 
-    public void next(Player commandSender) {
+    public void next(Player p) {
         Database database = Database.getInstance();
 
         try {
             if (!DetourManager.getInstance().getIsDetour()) {
-                commandSender.sendMessage(Settings.notStarted);
+                p.sendMessage(Settings.notStarted);
                 return;
             }
 
             boolean isPlayerOffline = false;
-            ArrayList<EventParticipant> participants = Database.getInstance().getPlayers(0, false, false);
+            ArrayList<EventParticipant> participants = Database.getInstance().getPlayers(this.getEventId(), false, false);
             ArrayList<EventParticipant> party = database.getPlayers(eventId, false, true);
 
-            Player p = (Player) commandSender;
+            Log.info(participants);
 
             if (participants.size() <= 0) {
                 DetourManager.getInstance().stop();

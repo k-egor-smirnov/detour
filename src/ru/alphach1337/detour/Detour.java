@@ -15,10 +15,10 @@ public class Detour extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new EventListener(), this);
-        
+
         this.getConfig().addDefault("allowOffline", true);
         this.getConfig().addDefault("hoursToAllowDetour", 12);
-        this.getConfig().addDefault("partyGameMode", GameMode.SPECTATOR);
+        this.getConfig().addDefault("partyGameMode", String.valueOf(GameMode.SPECTATOR));
         this.getConfig().options().copyDefaults(true);
         saveConfig();
 
@@ -35,7 +35,7 @@ public class Detour extends JavaPlugin implements Listener {
 
         this.getCommand("detour").setExecutor(cw);
 
-        Database.getInstance().init();
+        DetourManager.getInstance().setEvent(Database.getInstance().init());
     }
 
     @Override

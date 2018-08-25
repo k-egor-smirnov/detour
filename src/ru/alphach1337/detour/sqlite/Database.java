@@ -46,12 +46,12 @@ public class Database {
         }
     }
 
-    public void init() {
+    public int init() {
         open();
 
         try {
             String queryJoins = "CREATE TABLE IF NOT EXISTS `joins` (\n" +
-                    "\t`uuid`\tCHAR ( 36 ) NOT NULL UNIQUE,\n" +
+                    "\t`uuid`\tCHAR ( 36 ) NOT NULL,\n" +
                     "\t`event`\tINT ( 4 ),\n" +
                     "\t`reviewer`\tBOOLEAN DEFAULT 0,\n" +
                     "\t`ignore`\tBOOLEAN DEFAULT 0,\n" +
@@ -63,15 +63,24 @@ public class Database {
                     "\t`active`\tBOOLEAN DEFAULT 1\n" +
                     ");";
 
+            String getActiveEventQuery = "SELECT id FROM events WHERE active = 1";
+
             statement.addBatch(queryJoins);
             statement.addBatch(queryEvents);
 
             statement.executeBatch();
+            ResultSet rs = statement.executeQuery(getActiveEventQuery);
+
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         close();
+
+        return -1;
     }
 
     public ArrayList<EventParticipant> getPlayers(int eventId, boolean includeIgnored, boolean reviewer) {
@@ -181,6 +190,12 @@ public class Database {
             ResultSet rs = statement.executeQuery(queryGetId);
 
             eventId = rs.getInt(1);
+
+            // Перенос зашедших заранее в новый обход
+            String queryUpdate = "UPDATE joins SET event = " + eventId + " " +
+                    "WHERE event = -1";
+
+            statement.execute(queryUpdate);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -194,179 +209,14 @@ public class Database {
         open();
 
         try {
-            String query = "UPDATE events SET" +
+            String query = "UPDATE events SET " +
                     "active = false" ;
 
-            statement.executeQuery(query);
+            statement.execute(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         close();
     }
-//
-//    public static void createDuoTable(String table, String column) {
-//        open();
-//        try {
-//            String query = "CREATE TABLE IF NOT EXISTS " + table + " (" +
-//                    column + " VARCHAR(100), " +
-//                     "uuid VARCHAR(50));";
-//            statement.execute(query);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        close();
-//    }
-//
-//    public static ArrayList<String> selectAllUuids(String table) {
-//        open();
-//        ArrayList<String> list = new ArrayList<>();
-//        String query = "SELECT uuid " +
-//                "FROM " + table;
-//        try(ResultSet rs = statement.executeQuery(query)) {
-//            while (rs.next()) {
-//                String name = rs.getString("uuid");
-//                list.add(name);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//
-//        }
-//        close();
-//        return list;
-//    }
-//
-//    public static String selectById(String uuid, String table, String column) {
-//        open();
-//        String query = "SELECT "+ column +
-//                " FROM " + table + " WHERE uuid='" + uuid + "';";
-//        try {
-//            ResultSet rs = statement.executeQuery(query);
-//            if(rs.next()) {
-//                String data = rs.getString(column);
-//                rs.close();
-//                return data;
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        close();
-//        return null;
-//    }
-//
-//    public static HashMap<String, String> selectAllLocations(String table) { //получить мапу uuid:location
-//        open();
-//        HashMap<String, String> map = new HashMap<>();
-//        String query = "SELECT uuid, location " +
-//                "FROM " + table;
-//        try(ResultSet rs = statement.executeQuery(query)) {
-//            while (rs.next()) {
-//                String loc = rs.getString("location");
-//                String uuid = rs.getString("uuid");
-//                map.put(uuid, loc);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        close();
-//        return map;
-//    }/*public static HashMap<String, Location> selectAllLocations(String table) { //получить мапу uuid:location
-//        open();
-//        HashMap<String, Location> map = new HashMap<>();
-//        String query = "SELECT uuid, location " +
-//                "FROM " + table;
-//        try(ResultSet rs = statement.executeQuery(query)) {
-//            World world;
-//            double[] xyz = new double[3];
-//            while (rs.next()) {
-//                String[] loc = rs.getString("location").split("&");
-//                world = Bukkit.getServer().getWorld(loc[0]);
-//                for (int i = 1; i <= 3; i++) {
-//                    xyz[i-1] = Double.parseDouble(loc[i]);
-//                }
-//                String uuid = rs.getString("uuid");
-//                map.put(uuid, new Location(world, xyz[0], xyz[1], xyz[2]));
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        close();
-//        return map;
-//    }*/
-//
-//    public static void insertUuidAndLocation(String uuid, Location location, String table) { //вставить запись uuid:location
-//        open();
-//        try {
-//            String loc = location.getWorld().getName() + "&" + location.getX() + "&" + location.getY() + "&" + location.getZ();
-//            String query = "INSERT INTO " + table + " (uuid, location) " +
-//                    "VALUES('"+uuid+"', '" + loc + "');";
-//            statement.executeUpdate(query);
-//            statement.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        close();
-//    }
-//
-//    public static void insertUuid(String uuid, String table) { //вставить uuid ользователя в таблицу
-//        open();
-//        try {
-//            String query = "INSERT INTO " + table + " (uuid) " +
-//                    "VALUES('" + uuid + "');";
-//            statement.executeUpdate(query);
-//            statement.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        close();
-//    }
-//
-//    public static void insert(String data, String uuid, String table, String column) { //вставить запись uuid:something
-//        open();
-//        try {
-//            String query = "INSERT INTO " + table + " (uuid, " + column + ") " +
-//                    "VALUES('" + uuid + "', '" + data + "');";
-//            statement.executeUpdate(query);
-//            statement.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        close();
-//    }
-//
-//    public static boolean contains(String uuid, String table) { //проверить, есть uuid игрока в таблице
-//        try {
-//            ArrayList<String> list = selectAllUuids(table);
-//            for (String s : list) {
-//                if (uuid.equals(s)) return true;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
-//
-//    public static void delete(String uuid, String table) { //удалить uudi из таблицы
-//        open();
-//        try {
-//            String query = "DELETE FROM " + table +
-//                    " WHERE uuid='" + uuid + "';";
-//            statement.executeUpdate(query);
-//            statement.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        close();
-//    }
-//
-//    public static void deleteTable(String table) { //удалить таблицу из бд
-//        open();
-//        try {
-//            String query = "DROP TABLE IF EXISTS " + table + ";";
-//            statement.execute(query);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        close();
-//    }
 }

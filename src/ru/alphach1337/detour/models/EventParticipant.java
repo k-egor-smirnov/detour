@@ -102,7 +102,7 @@ public class EventParticipant {
     private boolean ignore = false;
 
     public String getSQLUpdateQuery() {
-        return "UPDATE " + Settings.joinsTable + " SET" +
+        return "UPDATE " + Settings.joinsTable + " SET " +
                 "uuid = '" + this.getUUID() + "', " +
                 "location = '" + LocationHelper.serialize(this.getLocation()) + "', " +
                 "event = " + this.getEvent() + ", " +
@@ -124,7 +124,7 @@ public class EventParticipant {
 
     public String getSQLDeleteQuery() {
         return "DELETE FROM " + Settings.joinsTable + " WHERE " +
-                "event = " + this.getEvent() + ", " +
-                "uuid = " + this.getUUID();
+                "event = " + this.getEvent() + " AND " +
+                "uuid = '" + this.getUUID() + "'";
     }
 }

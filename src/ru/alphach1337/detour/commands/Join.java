@@ -52,7 +52,7 @@ public class Join extends DetourCommand {
         if (player.getStatistic(Statistic.PLAY_ONE_MINUTE) * 50L <= (config.getInt("hoursToAllowDetour") * 60 * 60 * 1000)) {
             player.sendMessage(Settings.time + ChatColor.YELLOW + config.getInt("hoursToAllowDetour"));
         } else {
-            if (!detourManager.getIsDetour()) {
+            if (!detourManager.getIsDetour() && !config.getBoolean("allowOffline")) {
                 player.sendMessage(Settings.notStarted);
                 return false;
             }
