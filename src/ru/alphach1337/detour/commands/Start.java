@@ -2,16 +2,35 @@ package ru.alphach1337.detour.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.Title;
 import ru.alphach1337.detour.managers.DetourManager;
-import ru.alphach1337.detour.sqlite.DataBase;
+import ru.alphach1337.detour.models.EventParticipant;
+import ru.alphach1337.detour.sqlite.Database;
 
-public class Start implements Command{
-    public String getPermission(){
+import java.util.ArrayList;
+import java.util.List;
+
+public class Start extends DetourCommand {
+    public Start(String name) {
+        super(name);
+    }
+
+    public String getPermission() {
         return "detour.manage";
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getUsage() {
+        return null;
     }
 
     @Override
@@ -20,28 +39,42 @@ public class Start implements Command{
     }
 
     @Override
-    public void execute(CommandSender commandSender, org.bukkit.command.Command command, String[] args) {
-        if(!(commandSender instanceof Player)){
+    public ArrayList<String> getArgs(Player player, List<String> args) {
+        return null;
+    }
+
+    @Override
+    public boolean execute(CommandSender commandSender, String s, String[] args) {
+        DetourManager detourManager = DetourManager.getInstance();
+
+        if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("Только игроки могут использовать эту команду!");
-            return;
+            return false;
         }
-        System.out.println(Bukkit.getServer().getClass().getPackage().getName());
-        if(!DetourManager.getInstance().getIsDetour()) {
-            DetourManager.getInstance().start();
-            DataBase.insertUuid(((Player) commandSender).getUniqueId().toString(), "party");
+
+        if (!detourManager.getIsDetour()) {
+            detourManager.start();
+
+            EventParticipant eventCreator = new EventParticipant(
+                    ((Player) commandSender).getUniqueId(),
+                    detourManager.getEventId(),
+                    ((Player) commandSender).getLocation(),
+                    true,
+                    false
+            );
+
+            Database.getInstance().addPlayerInEvent(detourManager.getEventId(), eventCreator);
 
             Title title = new Title(Settings.Started1, Settings.onStartSubtitle);
             title.setSubtitleColor(ChatColor.YELLOW);
             title.broadcast();
             Bukkit.broadcastMessage(Settings.Started1);
             Bukkit.broadcastMessage(Settings.Started2);
-        }else{
+
+            return true;
+        } else {
             commandSender.sendMessage(Settings.alreadyStarted);
+            return false;
         }
-    }
-
-    @Override
-    public void ExecuteConsole(CommandSender sen, org.bukkit.command.Command cmd, String[] args) {
-
     }
 }

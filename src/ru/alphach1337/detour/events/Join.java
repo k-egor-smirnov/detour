@@ -10,5 +10,7 @@ class Join {
             event.getPlayer().sendMessage(Settings.Started1);
             event.getPlayer().sendMessage(Settings.Started2);
         }
+
+        // Привет, админ, к обходу готово уже x человек
     }
 }

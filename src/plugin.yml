@@ -8,6 +8,7 @@ database: true
 
 commands:
   detour:
+    description: Плагин для обхода игроков
     start:
       description: Начинает обход
       permission: detour.manage

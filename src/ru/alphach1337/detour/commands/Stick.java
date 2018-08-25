@@ -1,6 +1,7 @@
 package ru.alphach1337.detour.commands;
 
 import org.bukkit.Material;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -8,10 +9,27 @@ import org.bukkit.inventory.meta.ItemMeta;
 import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.managers.DetourManager;
 
-public class Stick implements Command{
+import java.util.ArrayList;
+import java.util.List;
+
+public class Stick extends DetourCommand {
+    public Stick(String name) {
+        super(name);
+    }
+
     @Override
     public String getPermission() {
         return "detour.manage";
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getUsage() {
+        return null;
     }
 
     @Override
@@ -20,7 +38,13 @@ public class Stick implements Command{
     }
 
     @Override
-    public void execute(CommandSender commandSender, org.bukkit.command.Command command, String[] args) {
+    public ArrayList<String> getArgs(Player player, List<String> args) {
+        return null;
+    }
+
+
+    @Override
+    public boolean execute(CommandSender commandSender, String s, String[] args) {
         if(DetourManager.getInstance().getIsDetour()){
             ItemStack item = new ItemStack(Material.STICK, 1);
 
@@ -30,8 +54,12 @@ public class Stick implements Command{
             item.setItemMeta(meta);
 
             ((Player) commandSender).getInventory().addItem(item);
-        }else{
+
+            return true;
+        } else{
             commandSender.sendMessage(Settings.notStarted);
+
+            return false;
         }
     }
 }

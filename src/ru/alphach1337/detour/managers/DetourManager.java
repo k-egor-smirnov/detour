@@ -1,86 +1,139 @@
 package ru.alphach1337.detour.managers;
 
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.Player;
-import ru.alphach1337.detour.sqlite.DataBase;
+import ru.alphach1337.detour.Settings;
+import ru.alphach1337.detour.models.EventParticipant;
+import ru.alphach1337.detour.sqlite.Database;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class DetourManager {
     private static final DetourManager INSTANCE = new DetourManager();
-
-    public FileConfiguration config = Bukkit.getPluginManager().getPlugin("Detour").getConfig();
-
-    private boolean isDetour = false;
+    private FileConfiguration config = Bukkit.getPluginManager().getPlugin("Detour").getConfig();
+    private int     eventId  = -1;
 
     public static DetourManager getInstance() {
         return INSTANCE;
     }
 
-    private DetourManager() {
-    }
-
     public boolean getIsDetour() {
-        return isDetour;
+        return eventId != -1;
     }
 
-    public boolean addPlayer(Player p){
-        if(DataBase.contains(p.getUniqueId().toString(), "players") || DataBase.contains(p.getUniqueId().toString(), "ignorePlayers")){
-            return false;
-        }
-        DataBase.insertUuid(p.getUniqueId().toString(), "players");
+    public int getEventId() {
+        return eventId;
+    }
 
-        DataBase.insertUuid(p.getUniqueId().toString(), "ignorePlayers");
+    public FileConfiguration getConfig() {
+        return config;
+    }
 
-        DataBase.insert(p.getName(), p.getUniqueId().toString(), "idsAndNames", "name");
-        Location l = p.getLocation().clone();
-        DataBase.insertUuidAndLocation(p.getUniqueId().toString(), l, "locations");
-        if(!DataBase.contains(p.getUniqueId().toString(), "counts")){
-            DataBase.insert(""+0, p.getUniqueId().toString(), "counts", "count");
-        }
-        return true;
+    public boolean addPlayer(Player player) {
+        EventParticipant participant = new EventParticipant(eventId, player);
+
+        return Database.getInstance().addPlayerInEvent(eventId, participant);
     }
 
     public void start() {
-        isDetour = true;
+        eventId = Database.getInstance().startEvent();
+        Bukkit.getLogger().info(new StringBuilder().append("Обход #").append(eventId).append(" создан").toString());
     }
 
     public void stop() {
-        deleteAllTables();
-        createAllTables();
-        isDetour = false;
+        Database.getInstance().closeAllEvents();
+        eventId = -1;
     }
 
-    public void createAllTables(){
-        DataBase.createUuidTable("players");
-        DataBase.createUuidTable("ignorePlayers");
-        DataBase.createUuidTable("party");
-        DataBase.createDuoTable("idsAndNames",  "name");
-        DataBase.createDuoTable("locations", "location");
+    public void next(Player commandSender) {
+        Database database = Database.getInstance();
 
-    }
+        try {
+            if (!DetourManager.getInstance().getIsDetour()) {
+                commandSender.sendMessage(Settings.notStarted);
+                return;
+            }
 
-    public void deleteAllTables(){
-        DataBase.deleteTable("players");
-        DataBase.deleteTable("ignorePlayers");
-        DataBase.deleteTable("party");
-        DataBase.deleteTable("locations");
-        DataBase.deleteTable("idsAndNames");
-    }
+            boolean isPlayerOffline = false;
+            ArrayList<EventParticipant> participants = Database.getInstance().getPlayers(0, false, false);
+            ArrayList<EventParticipant> party = database.getPlayers(eventId, false, true);
 
-    public static Location getLocationFromString(String locationString){
-        World world;
-        double[] xyz = new double[3];
-        String[] locs = locationString.split("&");
-        world = Bukkit.getServer().getWorld(locs[0]);
-        for (int i = 1; i <= 3; i++) {
-            xyz[i-1] = Double.parseDouble(locs[i]);
+            Player p = (Player) commandSender;
+
+            if (participants.size() <= 0) {
+                DetourManager.getInstance().stop();
+                Bukkit.broadcastMessage(Settings.stopDetour);
+
+                return;
+            }
+
+            if (!DetourManager.getInstance().getIsDetour()) {
+                p.sendMessage(Settings.notStarted);
+                return;
+            }
+
+            if (participants.isEmpty()) {
+                p.sendMessage(Settings.notJoined);
+                return;
+            }
+
+            try {
+                for (EventParticipant participant : party) {
+                    Bukkit.getPlayer(participant.getUUID()).teleport(Bukkit.getPlayer(participants.get(0).getUUID()));
+                }
+
+            } catch (Exception e) {
+                for (EventParticipant participant : party) {
+                    Bukkit.getPlayer(participant.getUUID()).teleport(participant.getLocation());
+
+                }
+
+                isPlayerOffline = true;
+            }
+
+            for (int i = 0; i < participants.size(); i++) {
+                EventParticipant participant = participants.get(i);
+                Player player = Bukkit.getPlayer(participant.getUUID());
+
+                if (DetourManager.getInstance().getIsDetour() && player != null && player.isOnline()) {
+                    if (i >= 1) {
+                        try {
+                            ActionBarAPI.sendActionBar(player, ChatColor.GREEN + "Твое место в очереди " + i);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            ActionBarAPI.sendActionBar(player, ChatColor.YELLOW + "За вами наблюдают!");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                if (!isPlayerOffline) {
+                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + player.getDisplayName() + ChatColor.GREEN + ". Это его " + 0 + " обход."
+                            + "\n " + ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (participants.size() - 1));
+                } else {
+
+                    p.sendMessage(ChatColor.GREEN + "Добро пожаловать к игроку " + ChatColor.BLUE + player.getDisplayName() + ChatColor.RED + " (оффлайн)"
+                            + ChatColor.GREEN + ". Это его " + 0 + " обход." +
+                            "\n" + ChatColor.YELLOW + "Осталось: " + ChatColor.DARK_PURPLE + (participants.size() - 1));
+                }
+
+                participant.setIgnore(true);
+                Database.getInstance().setPlayer(participant);
+
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        return new Location(world, xyz[0], xyz[1], xyz[2]);
     }
 }

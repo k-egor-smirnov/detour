@@ -3,6 +3,7 @@ package ru.alphach1337.detour;
 import org.bukkit.ChatColor;
 
 public class Settings {
+    // Strings, better transfer to yaml, но кому это надо?
     public static String hasNoPermission = ChatColor.RED + "У вас нет прав для использования данной команды";
     public static String notStarted = ChatColor.RED + "Обход еще не начался!";
     public static String stopDetour = ChatColor.RED + "Обход закончен";
@@ -18,4 +19,8 @@ public class Settings {
     public static String onStartSubtitle = "Чтобы присоединиться, пиши /detour join";
     public static String stick = "Посох Мегумин";
     public static String time = ChatColor.RED + "Вы отыграли недостаточно часов, чтобы зайти в обход. Необходимо: ";
+
+    // Database
+    public static String eventsTable = "events";
+    public static String joinsTable = "joins";
 }

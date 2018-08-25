@@ -2,17 +2,36 @@ package ru.alphach1337.detour.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import ru.alphach1337.detour.Settings;
 import ru.alphach1337.detour.managers.DetourManager;
-import ru.alphach1337.detour.sqlite.DataBase;
+import ru.alphach1337.detour.models.EventParticipant;
+import ru.alphach1337.detour.sqlite.Database;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Party implements Command{
+public class Party extends DetourCommand {
+    public Party(String name) {
+        super(name);
+    }
+
     @Override
     public String getPermission() {
-        return "detour.manage";
+        return "detour.manage" ;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getUsage() {
+        return null;
     }
 
     @Override
@@ -21,41 +40,68 @@ public class Party implements Command{
     }
 
     @Override
-    public void execute(CommandSender commandSender, org.bukkit.command.Command command, String[] args) {
-        if(args.length <= 2){
-            return;
+    public ArrayList<String> getArgs(Player player, List<String> args) {
+        ArrayList<String> strings = new ArrayList<>();
+
+        if (args.size() <= 2) {
+            strings.add("add");
+
+            return strings;
         }
 
-        if(!DetourManager.getInstance().getIsDetour()){
+        if (args.size() >= 4) {
+            return new ArrayList<>();
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean execute(CommandSender commandSender, String s, String[] args) {
+        if (args.length <= 2) {
+            return false;
+        }
+
+        if (!DetourManager.getInstance().getIsDetour()) {
             commandSender.sendMessage(Settings.notStarted);
-            return;
+            return false;
         }
 
-        switch(args[1]){
+        switch (args[1]) {
             case "add": {
-                if(args.length >= 3) {
-                    if(Bukkit.getPlayer(UUID.fromString(args[2])) != null) {
-                        if((commandSender).getName().equalsIgnoreCase(args[2])){
-                            commandSender.sendMessage(ChatColor.RED + "Нельзя добавить самого себя!");
-                            return;
-                        }
+                Player player = Bukkit.getPlayer(args[2]);
 
-                        if(DataBase.contains(args[2], "party")){
-                            commandSender.sendMessage(ChatColor.RED + "Игрок уже в команде!");
-                        }else {
-                            DataBase.insertUuid(args[2], "party");
-                            commandSender.sendMessage(ChatColor.GREEN + "Вы добавили игрока " + args[2] + " в команду для обхода");
-                        }
-
-                    }else{
-                        commandSender.sendMessage(ChatColor.RED + "Игрок не найден");
+                if (player != null) {
+                    if (commandSender.getName().equalsIgnoreCase(player.getName())) {
+                        commandSender.sendMessage(ChatColor.RED + "Нельзя добавить самого себя!");
+                        return false;
                     }
-                }else{
-                    return;
+
+                    EventParticipant participant =
+                            Database.getInstance().getPlayerInEvent(
+                                    DetourManager.getInstance().getEventId(),
+                                    player.getUniqueId()
+                            );
+
+                    if (participant.getIsReviewer()) {
+                        commandSender.sendMessage(ChatColor.RED + "Игрок уже в команде!");
+                    } else {
+                        participant.setIsReviewer(true);
+                        Database.getInstance().setPlayer(participant);
+
+                        commandSender.sendMessage(ChatColor.GREEN + "Вы добавили игрока " + args[2] + " в команду для обхода");
+                        player.sendMessage(ChatColor.GREEN + "Вы добавлены в команду для обхода");
+                        player.setGameMode(GameMode.valueOf(DetourManager.getInstance().getConfig().getString("partyGameMode")));
+                    }
+
+                } else {
+                    commandSender.sendMessage(ChatColor.RED + "Игрок не найден");
                 }
 
                 break;
             }
         }
+
+        return false;
     }
 }
