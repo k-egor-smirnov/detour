@@ -44,7 +44,10 @@ public class CommandHandler implements TabCompleter, CommandExecutor {
             ArrayList<String> strings = new ArrayList<>();
 
             for (DetourCommand command : commands) {
-                if (commandSender.hasPermission(command.getPermission())) {
+                if (
+                        command.getClass().getSimpleName().toLowerCase().startsWith(args[0]) &&
+                        commandSender.hasPermission(command.getPermission())
+                ) {
                     strings.add(command.getClass().getSimpleName().toLowerCase());
                 }
             }
