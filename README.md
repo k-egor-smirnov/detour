@@ -18,5 +18,5 @@
   
 ## Связь со мной
 
-* [Telegram](t.me/swiftstranger)
-* [VK](vk.com/iosif_p)
+* [Telegram](https://t.me/swiftstranger) (@SwiftStranger)
+* [VK](https://vk.com/iosif_p)
