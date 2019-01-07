@@ -15,3 +15,8 @@
   - Добавляет игрока в команду для обхода
 - /detour list
   - Получить список игроков, участвующих в обходе
+  
+## Связь со мной
+
+* [Telegram](https://t.me/swiftstranger) (@SwiftStranger)
+* [VK](https://vk.com/iosif_p)
