@@ -1,7 +1,12 @@
 package ru.alphach1337.detour.sqlite;
 
+import com.mysql.fabric.xmlrpc.base.Array;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import ru.alphach1337.detour.Settings;
+import ru.alphach1337.detour.managers.DetourManager;
 import ru.alphach1337.detour.models.EventParticipant;
 
 import java.sql.*;
@@ -68,9 +73,7 @@ public class Database {
             statement.executeBatch();
             ResultSet rs = statement.executeQuery(getActiveEventQuery);
 
-            while (rs.next()) {
-                return rs.getInt(1);
-            }
+            return rs.getInt(1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,7 +82,7 @@ public class Database {
     }
 
     public ArrayList<EventParticipant> getPlayers(int eventId, boolean includeIgnored, boolean reviewer) {
-        ArrayList<EventParticipant> participants = new ArrayList<EventParticipant>();
+        ArrayList<EventParticipant> participants = new ArrayList<>();
 
         String query = "SELECT * " +
                 "FROM " + Settings.joinsTable + " " +
@@ -94,7 +97,7 @@ public class Database {
 
             while (rs.next()) {
                 EventParticipant participant = new EventParticipant(rs);
-
+                
                 participants.add(participant);
             }
         } catch (Exception e) {

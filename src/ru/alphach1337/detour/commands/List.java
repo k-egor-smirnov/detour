@@ -49,15 +49,28 @@ public class List extends DetourCommand {
                 false
         );
 
+        ArrayList<EventParticipant> reviewers = Database.getInstance().getPlayers(
+                DetourManager.getInstance().getEventId(),
+                false,
+                true
+        );
+
         ArrayList<String> names = new ArrayList<>();
 
-        for (int i = 0; i < players.size(); i++) {
-            String name = Bukkit.getPlayer(players.get(i).getUUID()).getDisplayName();
+        for (EventParticipant reviewer : reviewers) {
+            String name = Bukkit.getPlayer(reviewer.getUUID()).getDisplayName();
+            names.add(name + " [организатор]");
+        }
+
+        for (EventParticipant player : players) {
+            String name = Bukkit.getPlayer(player.getUUID()).getDisplayName();
             names.add(name);
         }
 
+        int size = players.size() + reviewers.size();
+
         String playersString = String.join(", ", names);
-        String message = ChatColor.GREEN + "На данный момент в обходе участвует " + ChatColor.YELLOW + players.size()
+        String message = ChatColor.GREEN + "На данный момент в обходе участвует " + ChatColor.YELLOW + size
                 + ChatColor.GREEN + " игроков: " + ChatColor.BLUE + playersString;
 
         Player p = (Player) commandSender;
