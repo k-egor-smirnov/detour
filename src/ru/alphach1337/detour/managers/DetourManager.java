@@ -55,12 +55,9 @@ public class DetourManager {
         ArrayList<EventParticipant> participants =
                 Database.getInstance().getPlayers(eventId, true, false);
 
-        participants.forEach((k) -> System.out.println(Bukkit.getPlayer(k.getUUID()).getDisplayName() + " | "));
-
         Database.getInstance().closeAllEvents();
         Bukkit.broadcastMessage(Settings.stopDetour);
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "Было пройдено игроков: " + ChatColor.DARK_PURPLE + participants.size() +
-                ChatColor.YELLOW + " за " + ChatColor.DARK_PURPLE + 20 + ChatColor.YELLOW + " минут");
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "Было пройдено игроков: " + ChatColor.DARK_PURPLE + participants.size());
 
         eventId = -1;
     }
